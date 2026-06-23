@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Planning 2026">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0a0a0f" id="themeColor">
+<title>Planning 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#0a0a0f;
+  --card:#13131a;
+  --card2:#1a1a24;
+  --border:#25253a;
+  --text:#f0f0fa;
+  --dim:#5a5a7a;
+  --accent:#6c63ff;
+  --accent2:#ff6584;
+  --green:#2ecc8a;
+  --teal:#4ecdc4;
+  --pink:#ff78c4;
+  --orange:#ffb347;
+  --yellow:#ffd60a;
+  --red:#ff4757;
+  --r:14px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ── LIGHT MODE ── */
+body.light{
+  --bg:#f2f2f7;
+  --card:#ffffff;
+  --card2:#e8e8f0;
+  --border:#d0d0e0;
+  --text:#0a0a1a;
+  --dim:#8888a8;
+  --accent:#5b52f0;
+  --accent2:#f04f6e;
+  --green:#1aaf70;
+  --teal:#2aacac;
+  --pink:#d94fac;
+  --orange:#d97830;
+  --yellow:#c4960a;
+  --red:#e02030;
+}
+body.light .hdr{background:rgba(242,242,247,0.92);}
+body.light .code-r{background:rgba(120,120,160,0.12);color:var(--dim);}
+body.light .day-cell{background:#fff;}
+body.light .day-cell.weekend{background:rgba(200,200,220,0.3);}
+body.light .overlay{background:rgba(0,0,0,0.4);}
+body.light .import-sheet{background:#fff;}
+
+html,body{height:100%;overflow:hidden;background:var(--bg);}
+body{font-family:'Space Grotesk',sans-serif;color:var(--text);display:flex;flex-direction:column;transition:background 0.25s,color 0.25s;}
+
+/* ── HEADER ── */
+.hdr{
+  padding: calc(var(--safe-top) + 14px) 20px 14px;
+  background:rgba(10,10,15,0.92);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:12px;
+  flex-shrink:0;
+  position:relative;z-index:10;
+}
+.hdr-logo{
+  width:36px;height:36px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;
+}
+.hdr-title{font-size:16px;font-weight:700;line-height:1.1;}
+.hdr-sub{font-size:11px;color:var(--dim);font-family:'JetBrains Mono',monospace;margin-top:1px;}
+.hdr-btn{
+  margin-left:auto;
+  padding:7px 14px;
+  background:var(--card2);
+  border:1px dashed var(--border);
+  border-radius:8px;
+  color:var(--dim);
+  font-family:'Space Grotesk',sans-serif;
+  font-size:12px;font-weight:600;
+  cursor:pointer;
+  flex-shrink:0;
+  transition:all 0.2s;
+}
+.hdr-btn:active{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+/* ── SCREENS ── */
+.screen{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
+
+/* ── SELECTION ── */
+.sel-wrap{padding:24px 16px calc(var(--safe-bottom) + 24px);}
+.sel-hello{font-size:28px;font-weight:700;letter-spacing:-0.5px;text-align:center;margin-bottom:4px;}
+.sel-sub{font-size:13px;color:var(--dim);text-align:center;margin-bottom:28px;}
+.grp-label{font-size:10px;font-weight:700;color:var(--dim);font-family:'JetBrains Mono',monospace;letter-spacing:1.5px;margin:0 0 8px;padding-top:4px;}
+.persons-list{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
+.person-card{
+  display:flex;align-items:center;
+  padding:14px 16px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  cursor:pointer;
+  transition:all 0.15s;
+  -webkit-user-select:none;
+}
+.person-card:active{transform:scale(0.97);border-color:var(--accent);background:var(--card2);}
+.person-card .av{
+  width:40px;height:40px;border-radius:10px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:700;color:#fff;
+  flex-shrink:0;margin-right:12px;
+}
+.person-card.mgmt .av{background:linear-gradient(135deg,#2ecc8a,#4ecdc4);}
+.person-card .pn{font-size:15px;font-weight:600;}
+.person-card .pr{font-size:11px;color:var(--dim);font-family:'JetBrains Mono',monospace;margin-top:2px;}
+.person-card .arr{margin-left:auto;color:var(--dim);font-size:18px;}
+
+/* ── PLANNING ── */
+.plan-wrap{display:flex;flex-direction:column;height:100%;}
+
+.back-row{
+  padding:12px 16px;
+  display:flex;align-items:center;gap:10px;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.back-btn{
+  display:flex;align-items:center;gap:6px;
+  padding:6px 12px;
+  background:var(--card2);border:1px solid var(--border);
+  border-radius:8px;color:var(--text);
+  font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;
+  cursor:pointer;
+}
+.back-btn:active{border-color:var(--accent);}
+.plan-name{font-size:15px;font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.plan-name span{color:var(--accent);}
+
+/* Month tabs */
+.month-tabs-wrap{
+  padding:10px 0 0;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.month-tabs-wrap::-webkit-scrollbar{display:none;}
+.month-tabs{display:flex;gap:4px;padding:0 16px 10px;}
+.mtab{
+  padding:6px 12px;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:8px;white-space:nowrap;
+  font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace;
+  color:var(--dim);cursor:pointer;flex-shrink:0;
+  transition:all 0.15s;
+}
+.mtab.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.mtab:active{opacity:0.7;}
+
+/* Calendar scroll area */
+.cal-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 16px calc(var(--safe-bottom) + 16px);}
+
+/* Month header */
+.month-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.month-name{font-size:22px;font-weight:700;letter-spacing:-0.5px;}
+.nav-row{display:flex;gap:6px;}
+.nav-btn{
+  width:34px;height:34px;
+  background:var(--card);border:1px solid var(--border);border-radius:8px;
+  color:var(--text);font-size:18px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+}
+.nav-btn:active{border-color:var(--accent);color:var(--accent);}
+.nav-btn:disabled{opacity:0.25;}
+
+/* Stats chips */
+.stats-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.schip{
+  display:flex;align-items:center;gap:5px;
+  padding:5px 10px;background:var(--card);border:1px solid var(--border);border-radius:6px;
+  font-size:12px;
+}
+.schip strong{font-family:'JetBrains Mono',monospace;font-size:13px;}
+
+/* Day grid header */
+.grid-hdr{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:3px;}
+.grid-hdr-cell{text-align:center;font-size:9px;font-weight:700;color:var(--dim);font-family:'JetBrains Mono',monospace;padding:3px 0;}
+
+/* Day grid */
+.day-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.day-cell{
+  background:var(--card);border-radius:8px;
+  padding:6px 4px 5px;
+  display:flex;flex-direction:column;align-items:center;
+  min-height:54px;
+  border:1px solid transparent;
+  position:relative;
+}
+.day-cell.empty{background:transparent;border-color:transparent;}
+.day-cell.weekend{background:rgba(30,30,46,0.5);}
+.day-cell.today{border-color:var(--accent) !important;background:rgba(108,99,255,0.1);}
+.day-n{font-size:11px;font-weight:700;color:var(--dim);font-family:'JetBrains Mono',monospace;margin-bottom:1px;}
+.day-lbl{font-size:8px;color:var(--dim);opacity:0.5;margin-bottom:4px;font-family:'JetBrains Mono',monospace;}
+.day-code{
+  font-size:10px;font-weight:700;
+  padding:2px 4px;border-radius:4px;
+  text-align:center;width:100%;
+  font-family:'JetBrains Mono',monospace;
+  letter-spacing:0.3px;
+  margin-top:auto;
+  word-break:break-all;
+  line-height:1.2;
+}
+.code-1{background:rgba(46,204,138,0.15);color:var(--green);}
+.code-2{background:rgba(78,205,196,0.15);color:var(--teal);}
+.code-3{background:rgba(255,120,196,0.15);color:var(--pink);}
+.code-4{background:rgba(255,179,71,0.15);color:var(--orange);}
+.code-f{background:rgba(108,99,255,0.15);color:var(--accent);}
+.code-r{background:rgba(90,90,122,0.2);color:var(--dim);}
+.code-rtt{background:rgba(255,214,10,0.15);color:var(--yellow);}
+.code-a{background:rgba(108,99,255,0.25);color:var(--accent);}
+.code-jf{background:rgba(255,71,87,0.15);color:var(--red);}
+.code-c{background:rgba(255,101,132,0.15);color:var(--accent2);}
+.code-ma{background:rgba(255,179,71,0.2);color:var(--orange);}
+.code-rcn{background:rgba(255,214,10,0.2);color:var(--yellow);}
+.code-other{background:rgba(90,90,122,0.15);color:var(--dim);}
+
+/* ── IMPORT OVERLAY ── */
+.overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,0.8);
+  z-index:200;
+  align-items:flex-end;justify-content:center;
+  padding-bottom:var(--safe-bottom);
+}
+.overlay.show{display:flex;}
+.import-sheet{
+  background:var(--card);
+  border-radius:20px 20px 0 0;
+  padding:24px 20px calc(var(--safe-bottom) + 24px);
+  width:100%;
+  max-width:500px;
+}
+.sheet-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px;}
+.sheet-title{font-size:18px;font-weight:700;margin-bottom:6px;}
+.sheet-sub{font-size:13px;color:var(--dim);margin-bottom:20px;line-height:1.5;}
+.drop-zone{
+  border:2px dashed var(--border);border-radius:12px;
+  padding:32px 16px;text-align:center;cursor:pointer;
+  transition:all 0.2s;margin-bottom:14px;
+}
+.drop-zone:active,.drop-zone.over{border-color:var(--accent);background:rgba(108,99,255,0.05);}
+.drop-zone .dz-icon{font-size:32px;margin-bottom:8px;}
+.drop-zone .dz-title{font-size:14px;font-weight:600;margin-bottom:4px;}
+.drop-zone .dz-sub{font-size:12px;color:var(--dim);}
+.import-status{font-size:12px;color:var(--green);font-family:'JetBrains Mono',monospace;min-height:18px;margin-bottom:14px;text-align:center;}
+.import-status.err{color:var(--red);}
+.close-btn{
+  width:100%;padding:14px;
+  background:var(--card2);border:1px solid var(--border);border-radius:10px;
+  color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600;
+  cursor:pointer;
+}
+.close-btn:active{border-color:var(--accent);}
+
+/* Badge */
+.badge{font-size:9px;background:var(--green);color:#000;padding:2px 6px;border-radius:4px;font-weight:700;font-family:'JetBrains Mono',monospace;display:none;margin-left:4px;}
+.ics-btn{
+  padding:6px 12px;
+  background:rgba(46,204,138,0.12);
+  border:1px solid rgba(46,204,138,0.3);
+  border-radius:8px;
+  color:var(--green);
+  font-family:'Space Grotesk',sans-serif;
+  font-size:12px;font-weight:700;
+  cursor:pointer;flex-shrink:0;
+  transition:all 0.2s;
+}
+.ics-btn:active{background:rgba(46,204,138,0.25);}
+  display:inline-flex;align-items:center;gap:5px;
+  margin-top:5px;
+  padding:4px 10px;
+  background:rgba(108,99,255,0.12);
+  border:1px solid rgba(108,99,255,0.3);
+  border-radius:20px;
+  font-size:12px;font-weight:700;
+  color:var(--accent);
+  font-family:'JetBrains Mono',monospace;
+}
+.annual-bar{
+  margin:0 16px 14px;
+  padding:12px 14px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.annual-label{font-size:12px;color:var(--dim);}
+.annual-val{font-size:16px;font-weight:700;color:var(--accent);font-family:'JetBrains Mono',monospace;}
+  width:34px;height:34px;
+  background:var(--card2);border:1px solid var(--border);border-radius:8px;
+  font-size:16px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.2s;flex-shrink:0;
+}
+.theme-btn:active{border-color:var(--accent);}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-logo">📅</div>
+  <div>
+    <div class="hdr-title">Tableau de Service <span class="badge" id="badge">MÀJ</span></div>
+    <div class="hdr-sub" id="fileLabel">Planning 2026</div>
+  </div>
+  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Changer le thème">🌙</button>
+  <button class="hdr-btn" id="uploadBtn">⬆ MàJ</button>
+</header>
+
+<!-- Import overlay -->
+<div class="overlay" id="overlay">
+  <div class="import-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Mettre à jour</div>
+    <div class="sheet-sub">Sélectionnez ou glissez votre nouveau fichier Excel (.xlsx)</div>
+    <div class="drop-zone" id="dropZone">
+      <div class="dz-icon">📂</div>
+      <div class="dz-title">Appuyez pour choisir un fichier</div>
+      <div class="dz-sub">ou glissez-déposez ici</div>
+      <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none">
+    </div>
+    <div class="import-status" id="importStatus"></div>
+    <button class="close-btn" onclick="closeOverlay()">Fermer</button>
+  </div>
+</div>
+
+<!-- Selection screen -->
+<div class="screen" id="screenSel">
+  <div class="sel-wrap">
+    <div class="sel-hello" id="selDate"></div>
+    <div class="sel-sub">Sélectionnez votre nom</div>
+    <div id="personsGrid"></div>
+  </div>
+</div>
+
+<!-- Planning screen -->
+<div class="screen" id="screenPlan" style="display:none;flex-direction:column;">
+  <div class="plan-wrap">
+    <div class="back-row">
+      <button class="back-btn" onclick="showSel()">← Retour</button>
+      <div class="plan-name" id="planName"></div>
+      <button class="ics-btn" id="icsBtn" onclick="exportICS()">📅 Agenda</button>
+    </div>
+    <div class="month-tabs-wrap">
+      <div class="month-tabs" id="monthTabs"></div>
+    </div>
+    <div class="cal-scroll" id="calScroll">
+      <div class="annual-bar" id="annualBar" style="display:none">
+        <div class="annual-label">📊 Total annuel</div>
+        <div class="annual-val" id="annualVal"></div>
+      </div>
+      <div class="month-hdr">
+        <div>
+          <div class="month-name" id="monthName"></div>
+          <div class="hours-badge" id="monthHours" style="display:none"></div>
+        </div>
+        <div class="nav-row">
+          <button class="nav-btn" id="prevBtn" onclick="changeMonth(-1)">‹</button>
+          <button class="nav-btn" id="nextBtn" onclick="changeMonth(1)">›</button>
+        </div>
+      </div>
+      <div class="stats-row" id="statsRow"></div>
+      <div class="grid-hdr">
+        <div class="grid-hdr-cell">L</div><div class="grid-hdr-cell">M</div>
+        <div class="grid-hdr-cell">Me</div><div class="grid-hdr-cell">J</div>
+        <div class="grid-hdr-cell">V</div><div class="grid-hdr-cell">S</div>
+        <div class="grid-hdr-cell">D</div>
+      </div>
+      <div class="day-grid" id="dayGrid"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SCHEDULE_DATA = {"BELENUS Tony":{"JANVIER":[{"date":"2026-01-01","day":1,"dayName":"jeu.","code":"JF1"},{"date":"2026-01-02","day":2,"dayName":"ven.","code":"3"},{"date":"2026-01-03","day":3,"dayName":"sam.","code":""},{"date":"2026-01-04","day":4,"dayName":"dim.","code":"R"},{"date":"2026-01-05","day":5,"dayName":"lun.","code":"R"},{"date":"2026-01-06","day":6,"dayName":"mar.","code":"1"},{"date":"2026-01-07","day":7,"dayName":"mer.","code":"1"},{"date":"2026-01-08","day":8,"dayName":"jeu.","code":"1"},{"date":"2026-01-09","day":9,"dayName":"ven.","code":"1"},{"date":"2026-01-10","day":10,"dayName":"sam.","code":"1"},{"date":"2026-01-11","day":11,"dayName":"dim.","code":"A"},{"date":"2026-01-12","day":12,"dayName":"lun.","code":"2"},{"date":"2026-01-13","day":13,"dayName":"mar.","code":"2"},{"date":"2026-01-14","day":14,"dayName":"mer.","code":"2"},{"date":"2026-01-15","day":15,"dayName":"jeu.","code":"2"},{"date":"2026-01-16","day":16,"dayName":"ven.","code":"2"},{"date":"2026-01-17","day":17,"dayName":"sam.","code":"R"},{"date":"2026-01-18","day":18,"dayName":"dim.","code":"R"},{"date":"2026-01-19","day":19,"dayName":"lun.","code":"4"},{"date":"2026-01-20","day":20,"dayName":"mar.","code":"4"},{"date":"2026-01-21","day":21,"dayName":"mer.","code":"4"},{"date":"2026-01-22","day":22,"dayName":"jeu.","code":"4"},{"date":"2026-01-23","day":23,"dayName":"ven.","code":"4"},{"date":"2026-01-24","day":24,"dayName":"sam.","code":""},{"date":"2026-01-25","day":25,"dayName":"dim.","code":"R"},{"date":"2026-01-26","day":26,"dayName":"lun.","code":"R"},{"date":"2026-01-27","day":27,"dayName":"mar.","code":"f/c"},{"date":"2026-01-28","day":28,"dayName":"mer.","code":"F"},{"date":"2026-01-29","day":29,"dayName":"jeu.","code":"F"},{"date":"2026-01-30","day":30,"dayName":"ven.","code":"R"},{"date":"2026-01-31","day":31,"dayName":"sam.","code":"R"}],"FEVRIER":[{"date":"2026-02-01","day":1,"dayName":"dim.","code":"R"},{"date":"2026-02-02","day":2,"dayName":"lun.","code":"3"},{"date":"2026-02-03","day":3,"dayName":"mar.","code":"3"},{"date":"2026-02-04","day":4,"dayName":"mer.","code":"3"},{"date":"2026-02-05","day":5,"dayName":"jeu.","code":"3"},{"date":"2026-02-06","day":6,"dayName":"ven.","code":"C"},{"date":"2026-02-07","day":7,"dayName":"sam.","code":""},{"date":"2026-02-08","day":8,"dayName":"dim.","code":"R"},{"date":"2026-02-09","day":9,"dayName":"lun.","code":"R"},{"date":"2026-02-10","day":10,"dayName":"mar.","code":"1"},{"date":"2026-02-11","day":11,"dayName":"mer.","code":"1"},{"date":"2026-02-12","day":12,"dayName":"jeu.","code":"1"},{"date":"2026-02-13","day":13,"dayName":"ven.","code":"1"},{"date":"2026-02-14","day":14,"dayName":"sam.","code":"1"},{"date":"2026-02-15","day":15,"dayName":"dim.","code":"A"},{"date":"2026-02-16","day":16,"dayName":"lun.","code":"2"},{"date":"2026-02-17","day":17,"dayName":"mar.","code":"2"},{"date":"2026-02-18","day":18,"dayName":"mer.","code":"2"},{"date":"2026-02-19","day":19,"dayName":"jeu.","code":"2"},{"date":"2026-02-20","day":20,"dayName":"ven.","code":"2"},{"date":"2026-02-21","day":21,"dayName":"sam.","code":"R"},{"date":"2026-02-22","day":22,"dayName":"dim.","code":"R"},{"date":"2026-02-23","day":23,"dayName":"lun.","code":"4"},{"date":"2026-02-24","day":24,"dayName":"mar.","code":"4"},{"date":"2026-02-25","day":25,"dayName":"mer.","code":"4"},{"date":"2026-02-26","day":26,"dayName":"jeu.","code":"4"},{"date":"2026-02-27","day":27,"dayName":"ven.","code":"4"},{"date":"2026-02-28","day":28,"dayName":"sam.","code":""}],"MARS":[{"date":"2026-03-01","day":1,"dayName":"dim.","code":"R"},{"date":"2026-03-02","day":2,"dayName":"lun.","code":"R"},{"date":"2026-03-03","day":3,"dayName":"mar.","code":"1"},{"date":"2026-03-04","day":4,"dayName":"mer.","code":"F"},{"date":"2026-03-05","day":5,"dayName":"jeu.","code":"F"},{"date":"2026-03-06","day":6,"dayName":"ven.","code":"R"},{"date":"2026-03-07","day":7,"dayName":"sam.","code":"R"},{"date":"2026-03-08","day":8,"dayName":"dim.","code":"R"},{"date":"2026-03-09","day":9,"dayName":"lun.","code":"3"},{"date":"2026-03-10","day":10,"dayName":"mar.","code":"3"},{"date":"2026-03-11","day":11,"dayName":"mer.","code":"3"},{"date":"2026-03-12","day":12,"dayName":"jeu.","code":"3"},{"date":"2026-03-13","day":13,"dayName":"ven.","code":"3"},{"date":"2026-03-14","day":14,"dayName":"sam.","code":""},{"date":"2026-03-15","day":15,"dayName":"dim.","code":"R"},{"date":"2026-03-16","day":16,"dayName":"lun.","code":"R"},{"date":"2026-03-17","day":17,"dayName":"mar.","code":"1"},{"date":"2026-03-18","day":18,"dayName":"mer.","code":"1"},{"date":"2026-03-19","day":19,"dayName":"jeu.","code":"1"},{"date":"2026-03-20","day":20,"dayName":"ven.","code":"1"},{"date":"2026-03-21","day":21,"dayName":"sam.","code":"1"},{"date":"2026-03-22","day":22,"dayName":"dim.","code":"A"},{"date":"2026-03-23","day":23,"dayName":"lun.","code":"2"},{"date":"2026-03-24","day":24,"dayName":"mar.","code":"2"},{"date":"2026-03-25","day":25,"dayName":"mer.","code":"2"},{"date":"2026-03-26","day":26,"dayName":"jeu.","code":"2"},{"date":"2026-03-27","day":27,"dayName":"ven.","code":"2"},{"date":"2026-03-28","day":28,"dayName":"sam.","code":"R"},{"date":"2026-03-29","day":29,"dayName":"dim.","code":"R"},{"date":"2026-03-30","day":30,"dayName":"lun.","code":"4"},{"date":"2026-03-31","day":31,"dayName":"mar.","code":"4"}],"AVRIL":[{"date":"2026-04-01","day":1,"dayName":"mer.","code":"4"},{"date":"2026-04-02","day":2,"dayName":"jeu.","code":"4"},{"date":"2026-04-03","day":3,"dayName":"ven.","code":"4"},{"date":"2026-04-04","day":4,"dayName":"sam.","code":""},{"date":"2026-04-05","day":5,"dayName":"dim.","code":"R"},{"date":"2026-04-06","day":6,"dayName":"lun.","code":"JF2"},{"date":"2026-04-07","day":7,"dayName":"mar.","code":"R"},{"date":"2026-04-08","day":8,"dayName":"mer.","code":"F"},{"date":"2026-04-09","day":9,"dayName":"jeu.","code":"F"},{"date":"2026-04-10","day":10,"dayName":"ven.","code":"R"},{"date":"2026-04-11","day":11,"dayName":"sam.","code":"R"},{"date":"2026-04-12","day":12,"dayName":"dim.","code":"R"},{"date":"2026-04-13","day":13,"dayName":"lun.","code":"3"},{"date":"2026-04-14","day":14,"dayName":"mar.","code":"3"},{"date":"2026-04-15","day":15,"dayName":"mer.","code":"3"},{"date":"2026-04-16","day":16,"dayName":"jeu.","code":"3"},{"date":"2026-04-17","day":17,"dayName":"ven.","code":"3"},{"date":"2026-04-18","day":18,"dayName":"sam.","code":""},{"date":"2026-04-19","day":19,"dayName":"dim.","code":"R"},{"date":"2026-04-20","day":20,"dayName":"lun.","code":"R"},{"date":"2026-04-21","day":21,"dayName":"mar.","code":"C"},{"date":"2026-04-22","day":22,"dayName":"mer.","code":"C"},{"date":"2026-04-23","day":23,"dayName":"jeu.","code":"C"},{"date":"2026-04-24","day":24,"dayName":"ven.","code":"1"},{"date":"2026-04-25","day":25,"dayName":"sam.","code":"1"},{"date":"2026-04-26","day":26,"dayName":"dim.","code":"A"},{"date":"2026-04-27","day":27,"dayName":"lun.","code":"R"},{"date":"2026-04-28","day":28,"dayName":"mar.","code":"R"},{"date":"2026-04-29","day":29,"dayName":"mer.","code":"F"},{"date":"2026-04-30","day":30,"dayName":"jeu.","code":"R"}],"MAI":[{"date":"2026-05-01","day":1,"dayName":"ven.","code":"JF3"},{"date":"2026-05-02","day":2,"dayName":"sam.","code":"R"},{"date":"2026-05-03","day":3,"dayName":"dim.","code":"R"},{"date":"2026-05-04","day":4,"dayName":"lun.","code":"4"},{"date":"2026-05-05","day":5,"dayName":"mar.","code":"4"},{"date":"2026-05-06","day":6,"dayName":"mer.","code":"4"},{"date":"2026-05-07","day":7,"dayName":"jeu.","code":"4"},{"date":"2026-05-08","day":8,"dayName":"ven.","code":"JF4"},{"date":"2026-05-09","day":9,"dayName":"sam.","code":""},{"date":"2026-05-10","day":10,"dayName":"dim.","code":"R"},{"date":"2026-05-11","day":11,"dayName":"lun.","code":"R"},{"date":"2026-05-12","day":12,"dayName":"mar.","code":"RCN"},{"date":"2026-05-13","day":13,"dayName":"mer.","code":"RCN"},{"date":"2026-05-14","day":14,"dayName":"jeu.","code":"JF5"},{"date":"2026-05-15","day":15,"dayName":"ven.","code":"R"},{"date":"2026-05-16","day":16,"dayName":"sam.","code":"R"},{"date":"2026-05-17","day":17,"dayName":"dim.","code":"R"},{"date":"2026-05-18","day":18,"dayName":"lun.","code":"3"},{"date":"2026-05-19","day":19,"dayName":"mar.","code":"3"},{"date":"2026-05-20","day":20,"dayName":"mer.","code":"3"},{"date":"2026-05-21","day":21,"dayName":"jeu.","code":"3"},{"date":"2026-05-22","day":22,"dayName":"ven.","code":"3"},{"date":"2026-05-23","day":23,"dayName":"sam.","code":""},{"date":"2026-05-24","day":24,"dayName":"dim.","code":"R"},{"date":"2026-05-25","day":25,"dayName":"lun.","code":"R"},{"date":"2026-05-26","day":26,"dayName":"mar.","code":"R"},{"date":"2026-05-27","day":27,"dayName":"mer.","code":"1"},{"date":"2026-05-28","day":28,"dayName":"jeu.","code":"1"},{"date":"2026-05-29","day":29,"dayName":"ven.","code":"1"},{"date":"2026-05-30","day":30,"dayName":"sam.","code":"1"},{"date":"2026-05-31","day":31,"dayName":"dim.","code":"A"}],"JUIN":[{"date":"2026-06-01","day":1,"dayName":"lun.","code":"R"},{"date":"2026-06-02","day":2,"dayName":"mar.","code":"RCN"},{"date":"2026-06-03","day":3,"dayName":"mer.","code":"F"},{"date":"2026-06-04","day":4,"dayName":"jeu.","code":"f/c"},{"date":"2026-06-05","day":5,"dayName":"ven.","code":"R"},{"date":"2026-06-06","day":6,"dayName":"sam.","code":"R"},{"date":"2026-06-07","day":7,"dayName":"dim.","code":"R"},{"date":"2026-06-08","day":8,"dayName":"lun.","code":"3"},{"date":"2026-06-09","day":9,"dayName":"mar.","code":"3"},{"date":"2026-06-10","day":10,"dayName":"mer.","code":"3"},{"date":"2026-06-11","day":11,"dayName":"jeu.","code":"3"},{"date":"2026-06-12","day":12,"dayName":"ven.","code":"3"},{"date":"2026-06-13","day":13,"dayName":"sam.","code":""},{"date":"2026-06-14","day":14,"dayName":"dim.","code":"R"},{"date":"2026-06-15","day":15,"dayName":"lun.","code":"R"},{"date":"2026-06-16","day":16,"dayName":"mar.","code":"1"},{"date":"2026-06-17","day":17,"dayName":"mer.","code":"1"},{"date":"2026-06-18","day":18,"dayName":"jeu.","code":"1"},{"date":"2026-06-19","day":19,"dayName":"ven.","code":"2"},{"date":"2026-06-20","day":20,"dayName":"sam.","code":"1"},{"date":"2026-06-21","day":21,"dayName":"dim.","code":"A"},{"date":"2026-06-22","day":22,"dayName":"lun.","code":"R"},{"date":"2026-06-23","day":23,"dayName":"mar.","code":"F"},{"date":"2026-06-24","day":24,"dayName":"mer.","code":"F"},{"date":"2026-06-25","day":25,"dayName":"jeu.","code":"C"},{"date":"2026-06-26","day":26,"dayName":"ven.","code":"R"},{"date":"2026-06-27","day":27,"dayName":"sam.","code":"R"},{"date":"2026-06-28","day":28,"dayName":"dim.","code":"R"},{"date":"2026-06-29","day":29,"dayName":"lun.","code":"3"},{"date":"2026-06-30","day":30,"dayName":"mar.","code":"3"}],"JUILLET":[{"date":"2026-07-01","day":1,"dayName":"mer.","code":"3"},{"date":"2026-07-02","day":2,"dayName":"jeu.","code":"3"},{"date":"2026-07-03","day":3,"dayName":"ven.","code":"3"},{"date":"2026-07-04","day":4,"dayName":"sam.","code":""},{"date":"2026-07-05","day":5,"dayName":"dim.","code":"R"},{"date":"2026-07-06","day":6,"dayName":"lun.","code":"R"},{"date":"2026-07-07","day":7,"dayName":"mar.","code":"1"},{"date":"2026-07-08","day":8,"dayName":"mer.","code":"1"},{"date":"2026-07-09","day":9,"dayName":"jeu.","code":"1"},{"date":"2026-07-10","day":10,"dayName":"ven.","code":"1"},{"date":"2026-07-11","day":11,"dayName":"sam.","code":"1"},{"date":"2026-07-12","day":12,"dayName":"dim.","code":"A"},{"date":"2026-07-13","day":13,"dayName":"lun.","code":"R"},{"date":"2026-07-14","day":14,"dayName":"mar.","code":"R"},{"date":"2026-07-15","day":15,"dayName":"mer.","code":"C"},{"date":"2026-07-16","day":16,"dayName":"jeu.","code":"RTT"},{"date":"2026-07-17","day":17,"dayName":"ven.","code":"RTT"},{"date":"2026-07-18","day":18,"dayName":"sam.","code":"R"},{"date":"2026-07-19","day":19,"dayName":"dim.","code":"R"},{"date":"2026-07-20","day":20,"dayName":"lun.","code":"C"},{"date":"2026-07-21","day":21,"dayName":"mar.","code":"C"},{"date":"2026-07-22","day":22,"dayName":"mer.","code":"C"},{"date":"2026-07-23","day":23,"dayName":"jeu.","code":"C"},{"date":"2026-07-24","day":24,"dayName":"ven.","code":"C"},{"date":"2026-07-25","day":25,"dayName":"sam.","code":"R"},{"date":"2026-07-26","day":26,"dayName":"dim.","code":"R"},{"date":"2026-07-27","day":27,"dayName":"lun.","code":"C"},{"date":"2026-07-28","day":28,"dayName":"mar.","code":"C"},{"date":"2026-07-29","day":29,"dayName":"mer.","code":"C"},{"date":"2026-07-30","day":30,"dayName":"jeu.","code":"C"},{"date":"2026-07-31","day":31,"dayName":"ven.","code":"C"}],"AOUT":[{"date":"2026-08-01","day":1,"dayName":"sam.","code":"R"},{"date":"2026-08-02","day":2,"dayName":"dim.","code":"R"},{"date":"2026-08-03","day":3,"dayName":"lun.","code":"C"},{"date":"2026-08-04","day":4,"dayName":"mar.","code":"C"},{"date":"2026-08-05","day":5,"dayName":"mer.","code":"C"},{"date":"2026-08-06","day":6,"dayName":"jeu.","code":"C"},{"date":"2026-08-07","day":7,"dayName":"ven.","code":"C"},{"date":"2026-08-08","day":8,"dayName":"sam.","code":"R"},{"date":"2026-08-09","day":9,"dayName":"dim.","code":"R"},{"date":"2026-08-10","day":10,"dayName":"lun.","code":"3"},{"date":"2026-08-11","day":11,"dayName":"mar.","code":"3"},{"date":"2026-08-12","day":12,"dayName":"mer.","code":"3"},{"date":"2026-08-13","day":13,"dayName":"jeu.","code":"3"},{"date":"2026-08-14","day":14,"dayName":"ven.","code":"3"},{"date":"2026-08-15","day":15,"dayName":"sam.","code":""},{"date":"2026-08-16","day":16,"dayName":"dim.","code":"R"},{"date":"2026-08-17","day":17,"dayName":"lun.","code":"R"},{"date":"2026-08-18","day":18,"dayName":"mar.","code":"1"},{"date":"2026-08-19","day":19,"dayName":"mer.","code":"1"},{"date":"2026-08-20","day":20,"dayName":"jeu.","code":"1"},{"date":"2026-08-21","day":21,"dayName":"ven.","code":"1"},{"date":"2026-08-22","day":22,"dayName":"sam.","code":"1"},{"date":"2026-08-23","day":23,"dayName":"dim.","code":"A"},{"date":"2026-08-24","day":24,"dayName":"lun.","code":"2"},{"date":"2026-08-25","day":25,"dayName":"mar.","code":"2"},{"date":"2026-08-26","day":26,"dayName":"mer.","code":"2"},{"date":"2026-08-27","day":27,"dayName":"jeu.","code":"2"},{"date":"2026-08-28","day":28,"dayName":"ven.","code":"2"},{"date":"2026-08-29","day":29,"dayName":"sam.","code":"R"},{"date":"2026-08-30","day":30,"dayName":"dim.","code":"R"},{"date":"2026-08-31","day":31,"dayName":"lun.","code":"4"}],"SEPTEMBRE":[{"date":"2026-09-01","day":1,"dayName":"mar.","code":"4"},{"date":"2026-09-02","day":2,"dayName":"mer.","code":"4"},{"date":"2026-09-03","day":3,"dayName":"jeu.","code":"4"},{"date":"2026-09-04","day":4,"dayName":"ven.","code":"4"},{"date":"2026-09-05","day":5,"dayName":"sam.","code":""},{"date":"2026-09-06","day":6,"dayName":"dim.","code":"R"},{"date":"2026-09-07","day":7,"dayName":"lun.","code":"3"},{"date":"2026-09-08","day":8,"dayName":"mar.","code":"3"},{"date":"2026-09-09","day":9,"dayName":"mer.","code":"3"},{"date":"2026-09-10","day":10,"dayName":"jeu.","code":"3"},{"date":"2026-09-11","day":11,"dayName":"ven.","code":"3"},{"date":"2026-09-12","day":12,"dayName":"sam.","code":""},{"date":"2026-09-13","day":13,"dayName":"dim.","code":"R"},{"date":"2026-09-14","day":14,"dayName":"lun.","code":"R"},{"date":"2026-09-15","day":15,"dayName":"mar.","code":"1"},{"date":"2026-09-16","day":16,"dayName":"mer.","code":"1"},{"date":"2026-09-17","day":17,"dayName":"jeu.","code":"1"},{"date":"2026-09-18","day":18,"dayName":"ven.","code":"1"},{"date":"2026-09-19","day":19,"dayName":"sam.","code":"1"},{"date":"2026-09-20","day":20,"dayName":"dim.","code":"A"},{"date":"2026-09-21","day":21,"dayName":"lun.","code":"R"},{"date":"2026-09-22","day":22,"dayName":"mar.","code":"R"},{"date":"2026-09-23","day":23,"dayName":"mer.","code":"R"},{"date":"2026-09-24","day":24,"dayName":"jeu.","code":"2"},{"date":"2026-09-25","day":25,"dayName":"ven.","code":"2"},{"date":"2026-09-26","day":26,"dayName":"sam.","code":"R"},{"date":"2026-09-27","day":27,"dayName":"dim.","code":"R"},{"date":"2026-09-28","day":28,"dayName":"lun.","code":"4"},{"date":"2026-09-29","day":29,"dayName":"mar.","code":"4"},{"date":"2026-09-30","day":30,"dayName":"mer.","code":"4"},{"date":"2026-09-31","day":31,"dayName":"","code":""}],"OCTOBRE":[{"date":"2026-10-01","day":1,"dayName":"jeu.","code":"4"},{"date":"2026-10-02","day":2,"dayName":"ven.","code":"4"},{"date":"2026-10-03","day":3,"dayName":"sam.","code":""},{"date":"2026-10-04","day":4,"dayName":"dim.","code":"R"},{"date":"2026-10-05","day":5,"dayName":"lun.","code":"3"},{"date":"2026-10-06","day":6,"dayName":"mar.","code":"3"},{"date":"2026-10-07","day":7,"dayName":"mer.","code":"3"},{"date":"2026-10-08","day":8,"dayName":"jeu.","code":"3"},{"date":"2026-10-09","day":9,"dayName":"ven.","code":"3"},{"date":"2026-10-10","day":10,"dayName":"sam.","code":""},{"date":"2026-10-11","day":11,"dayName":"dim.","code":"R"},{"date":"2026-10-12","day":12,"dayName":"lun.","code":"R"},{"date":"2026-10-13","day":13,"dayName":"mar.","code":"1"},{"date":"2026-10-14","day":14,"dayName":"mer.","code":"1"},{"date":"2026-10-15","day":15,"dayName":"jeu.","code":"1"},{"date":"2026-10-16","day":16,"dayName":"ven.","code":"1"},{"date":"2026-10-17","day":17,"dayName":"sam.","code":"1"},{"date":"2026-10-18","day":18,"dayName":"dim.","code":"A"},{"date":"2026-10-19","day":19,"dayName":"lun.","code":"3"},{"date":"2026-10-20","day":20,"dayName":"mar.","code":"3"},{"date":"2026-10-21","day":21,"dayName":"mer.","code":"3"},{"date":"2026-10-22","day":22,"dayName":"jeu.","code":"3"},{"date":"2026-10-23","day":23,"dayName":"ven.","code":"3"},{"date":"2026-10-24","day":24,"dayName":"sam.","code":""},{"date":"2026-10-25","day":25,"dayName":"dim.","code":"R"},{"date":"2026-10-26","day":26,"dayName":"lun.","code":"R"},{"date":"2026-10-27","day":27,"dayName":"mar.","code":"R"},{"date":"2026-10-28","day":28,"dayName":"mer.","code":"R"},{"date":"2026-10-29","day":29,"dayName":"jeu.","code":"R"},{"date":"2026-10-30","day":30,"dayName":"ven.","code":"R"},{"date":"2026-10-31","day":31,"dayName":"sam.","code":"R"}],"NOVEMBRE":[{"date":"2026-11-01","day":1,"dayName":"dim.","code":"R"},{"date":"2026-11-02","day":2,"dayName":"lun.","code":"2"},{"date":"2026-11-03","day":3,"dayName":"mar.","code":"2"},{"date":"2026-11-04","day":4,"dayName":"mer.","code":"2"},{"date":"2026-11-05","day":5,"dayName":"jeu.","code":"2"},{"date":"2026-11-06","day":6,"dayName":"ven.","code":"2"},{"date":"2026-11-07","day":7,"dayName":"sam.","code":"R"},{"date":"2026-11-08","day":8,"dayName":"dim.","code":"R"},{"date":"2026-11-09","day":9,"dayName":"lun.","code":"4"},{"date":"2026-11-10","day":10,"dayName":"mar.","code":"4"},{"date":"2026-11-11","day":11,"dayName":"mer.","code":"R"},{"date":"2026-11-12","day":12,"dayName":"jeu.","code":"4"},{"date":"2026-11-13","day":13,"dayName":"ven.","code":"4"},{"date":"2026-11-14","day":14,"dayName":"sam.","code":""},{"date":"2026-11-15","day":15,"dayName":"dim.","code":"R"},{"date":"2026-11-16","day":16,"dayName":"lun.","code":"3"},{"date":"2026-11-17","day":17,"dayName":"mar.","code":"3"},{"date":"2026-11-18","day":18,"dayName":"mer.","code":"3"},{"date":"2026-11-19","day":19,"dayName":"jeu.","code":"3"},{"date":"2026-11-20","day":20,"dayName":"ven.","code":"3"},{"date":"2026-11-21","day":21,"dayName":"sam.","code":""},{"date":"2026-11-22","day":22,"dayName":"dim.","code":"R"},{"date":"2026-11-23","day":23,"dayName":"lun.","code":"R"},{"date":"2026-11-24","day":24,"dayName":"mar.","code":"1"},{"date":"2026-11-25","day":25,"dayName":"mer.","code":"1"},{"date":"2026-11-26","day":26,"dayName":"jeu.","code":"1"},{"date":"2026-11-27","day":27,"dayName":"ven.","code":"1"},{"date":"2026-11-28","day":28,"dayName":"sam.","code":"1"},{"date":"2026-11-29","day":29,"dayName":"dim.","code":"A"},{"date":"2026-11-30","day":30,"dayName":"lun.","code":"R"},{"date":"2026-11-31","day":31,"dayName":"","code":""}],"DECEMBRE":[{"date":"2026-12-01","day":1,"dayName":"mar.","code":"R"},{"date":"2026-12-02","day":2,"dayName":"mer.","code":"R"},{"date":"2026-12-03","day":3,"dayName":"jeu.","code":"2"},{"date":"2026-12-04","day":4,"dayName":"ven.","code":"2"},{"date":"2026-12-05","day":5,"dayName":"sam.","code":"R"},{"date":"2026-12-06","day":6,"dayName":"dim.","code":"R"},{"date":"2026-12-07","day":7,"dayName":"lun.","code":"2"},{"date":"2026-12-08","day":8,"dayName":"mar.","code":"2"},{"date":"2026-12-09","day":9,"dayName":"mer.","code":"2"},{"date":"2026-12-10","day":10,"dayName":"jeu.","code":"2"},{"date":"2026-12-11","day":11,"dayName":"ven.","code":"2"},{"date":"2026-12-12","day":12,"dayName":"sam.","code":"R"},{"date":"2026-12-13","day":13,"dayName":"dim.","code":"R"},{"date":"2026-12-14","day":14,"dayName":"lun.","code":"4"},{"date":"2026-12-15","day":15,"dayName":"mar.","code":"4"},{"date":"2026-12-16","day":16,"dayName":"mer.","code":"4"},{"date":"2026-12-17","day":17,"dayName":"jeu.","code":"4"},{"date":"2026-12-18","day":18,"dayName":"ven.","code":"4"},{"date":"2026-12-19","day":19,"dayName":"sam.","code":""},{"date":"2026-12-20","day":20,"dayName":"dim.","code":"R"},{"date":"2026-12-21","day":21,"dayName":"lun.","code":"3"},{"date":"2026-12-22","day":22,"dayName":"mar.","code":"3"},{"date":"2026-12-23","day":23,"dayName":"mer.","code":"3"},{"date":"2026-12-24","day":24,"dayName":"jeu.","code":"3"},{"date":"2026-12-25","day":25,"dayName":"ven.","code":""},{"date":"2026-12-26","day":26,"dayName":"sam.","code":"R"},{"date":"2026-12-27","day":27,"dayName":"dim.","code":"R"},{"date":"2026-12-28","day":28,"dayName":"lun.","code":"R"},{"date":"2026-12-29","day":29,"dayName":"mar.","code":"1"},{"date":"2026-12-30","day":30,"dayName":"mer.","code":"1"},{"date":"2026-12-31","day":31,"dayName":"jeu.","code":"1"}]},"HENAUT Mélanie":{"JANVIER":[{"date":"2026-01-01","day":1,"dayName":"jeu.","code":"A"},{"date":"2026-01-02","day":2,"dayName":"ven.","code":"A"},{"date":"2026-01-03","day":3,"dayName":"sam.","code":"1"},{"date":"2026-01-04","day":4,"dayName":"dim.","code":"A"},{"date":"2026-01-05","day":5,"dayName":"lun.","code":"2"},{"date":"2026-01-06","day":6,"dayName":"mar.","code":"2"},{"date":"2026-01-07","day":7,"dayName":"mer.","code":"2"},{"date":"2026-01-08","day":8,"dayName":"jeu.","code":"2"},{"date":"2026-01-09","day":9,"dayName":"ven.","code":"2"},{"date":"2026-01-10","day":10,"dayName":"sam.","code":"R"},{"date":"2026-01-11","day":11,"dayName":"dim.","code":"R"},{"date":"2026-01-12","day":12,"dayName":"lun.","code":"4"},{"date":"2026-01-13","day":13,"dayName":"mar.","code":"4"},{"date":"2026-01-14","day":14,"dayName":"mer.","code":"4"},{"date":"2026-01-15","day":15,"dayName":"jeu.","code":"4"},{"date":"2026-01-16","day":16,"dayName":"ven.","code":"4"},{"date":"2026-01-17","day":17,"dayName":"sam.","code":""},{"date":"2026-01-18","day":18,"dayName":"dim.","code":"R"},{"date":"2026-01-19","day":19,"dayName":"lun.","code":"R"},{"date":"2026-01-20","day":20,"dayName":"mar.","code":"F"},{"date":"2026-01-21","day":21,"dayName":"mer.","code":"f/rtt"},{"date":"2026-01-22","day":22,"dayName":"jeu.","code":"f/rtt"},{"date":"2026-01-23","day":23,"dayName":"ven.","code":"R"},{"date":"2026-01-24","day":24,"dayName":"sam.","code":"R"},{"date":"2026-01-25","day":25,"dayName":"dim.","code":"R"},{"date":"2026-01-26","day":26,"dayName":"lun.","code":"3"},{"date":"2026-01-27","day":27,"dayName":"mar.","code":"3"},{"date":"2026-01-28","day":28,"dayName":"mer.","code":"3"},{"date":"2026-01-29","day":29,"dayName":"jeu.","code":"3"},{"date":"2026-01-30","day":30,"dayName":"ven.","code":"3"},{"date":"2026-01-31","day":31,"dayName":"sam.","code":""}],"FEVRIER":[{"date":"2026-02-01","day":1,"dayName":"dim.","code":"R"},{"date":"2026-02-02","day":2,"dayName":"lun.","code":"R"},{"date":"2026-02-03","day":3,"dayName":"mar.","code":"1"},{"date":"2026-02-04","day":4,"dayName":"mer.","code":"1"},{"date":"2026-02-05","day":5,"dayName":"jeu.","code":"1"},{"date":"2026-02-06","day":6,"dayName":"ven.","code":"1"},{"date":"2026-02-07","day":7,"dayName":"sam.","code":"1"},{"date":"2026-02-08","day":8,"dayName":"dim.","code":"A"},{"date":"2026-02-09","day":9,"dayName":"lun.","code":"2"},{"date":"2026-02-10","day":10,"dayName":"mar.","code":"2"},{"date":"2026-02-11","day":11,"dayName":"mer.","code":"2"},{"date":"2026-02-12","day":12,"dayName":"jeu.","code":"2"},{"date":"2026-02-13","day":13,"dayName":"ven.","code":"2"},{"date":"2026-02-14","day":14,"dayName":"sam.","code":"R"},{"date":"2026-02-15","day":15,"dayName":"dim.","code":"R"},{"date":"2026-02-16","day":16,"dayName":"lun.","code":"C"},{"date":"2026-02-17","day":17,"dayName":"mar.","code":"C"},{"date":"2026-02-18","day":18,"dayName":"mer.","code":"C"},{"date":"2026-02-19","day":19,"dayName":"jeu.","code":"C"},{"date":"2026-02-20","day":20,"dayName":"ven.","code":"C"},{"date":"2026-02-21","day":21,"dayName":"sam.","code":"R"},{"date":"2026-02-22","day":22,"dayName":"dim.","code":"R"},{"date":"2026-02-23","day":23,"dayName":"lun.","code":"3"},{"date":"2026-02-24","day":24,"dayName":"mar.","code":"3"},{"date":"2026-02-25","day":25,"dayName":"mer.","code":"3"},{"date":"2026-02-26","day":26,"dayName":"jeu.","code":"3"},{"date":"2026-02-27","day":27,"dayName":"ven.","code":"3"},{"date":"2026-02-28","day":28,"dayName":"sam.","code":""}],"MARS":[{"date":"2026-03-01","day":1,"dayName":"dim.","code":"R"},{"date":"2026-03-02","day":2,"dayName":"lun.","code":"R"},{"date":"2026-03-03","day":3,"dayName":"mar.","code":"RCN"},{"date":"2026-03-04","day":4,"dayName":"mer.","code":"1"},{"date":"2026-03-05","day":5,"dayName":"jeu.","code":"1"},{"date":"2026-03-06","day":6,"dayName":"ven.","code":"1"},{"date":"2026-03-07","day":7,"dayName":"sam.","code":"1"},{"date":"2026-03-08","day":8,"dayName":"dim.","code":"A"},{"date":"2026-03-09","day":9,"dayName":"lun.","code":"2"},{"date":"2026-03-10","day":10,"dayName":"mar.","code":"2"},{"date":"2026-03-11","day":11,"dayName":"mer.","code":"2"},{"date":"2026-03-12","day":12,"dayName":"jeu.","code":"2"},{"date":"2026-03-13","day":13,"dayName":"ven.","code":"2"},{"date":"2026-03-14","day":14,"dayName":"sam.","code":"R"},{"date":"2026-03-15","day":15,"dayName":"dim.","code":"R"},{"date":"2026-03-16","day":16,"dayName":"lun.","code":"4"},{"date":"2026-03-17","day":17,"dayName":"mar.","code":"4"},{"date":"2026-03-18","day":18,"dayName":"mer.","code":"4"},{"date":"2026-03-19","day":19,"dayName":"jeu.","code":"4"},{"date":"2026-03-20","day":20,"dayName":"ven.","code":"4"},{"date":"2026-03-21","day":21,"dayName":"sam.","code":""},{"date":"2026-03-22","day":22,"dayName":"dim.","code":"R"},{"date":"2026-03-23","day":23,"dayName":"lun.","code":"R"},{"date":"2026-03-24","day":24,"dayName":"mar.","code":"F"},{"date":"2026-03-25","day":25,"dayName":"mer.","code":"F"},{"date":"2026-03-26","day":26,"dayName":"jeu.","code":"RTT"},{"date":"2026-03-27","day":27,"dayName":"ven.","code":"R"},{"date":"2026-03-28","day":28,"dayName":"sam.","code":"R"},{"date":"2026-03-29","day":29,"dayName":"dim.","code":"R"},{"date":"2026-03-30","day":30,"dayName":"lun.","code":"3"},{"date":"2026-03-31","day":31,"dayName":"mar.","code":"3"}],"AVRIL":[{"date":"2026-04-01","day":1,"dayName":"mer.","code":"3"},{"date":"2026-04-02","day":2,"dayName":"jeu.","code":"3"},{"date":"2026-04-03","day":3,"dayName":"ven.","code":"3"},{"date":"2026-04-04","day":4,"dayName":"sam.","code":""},{"date":"2026-04-05","day":5,"dayName":"dim.","code":"R"},{"date":"2026-04-06","day":6,"dayName":"lun.","code":"JF1"},{"date":"2026-04-07","day":7,"dayName":"mar.","code":"R"},{"date":"2026-04-08","day":8,"dayName":"mer.","code":"1"},{"date":"2026-04-09","day":9,"dayName":"jeu.","code":"1"},{"date":"2026-04-10","day":10,"dayName":"ven.","code":"1"},{"date":"2026-04-11","day":11,"dayName":"sam.","code":"1"},{"date":"2026-04-12","day":12,"dayName":"dim.","code":"A"},{"date":"2026-04-13","day":13,"dayName":"lun.","code":"R"},{"date":"2026-04-14","day":14,"dayName":"mar.","code":"C"},{"date":"2026-04-15","day":15,"dayName":"mer.","code":"C"},{"date":"2026-04-16","day":16,"dayName":"jeu.","code":"C"},{"date":"2026-04-17","day":17,"dayName":"ven.","code":"R"},{"date":"2026-04-18","day":18,"dayName":"sam.","code":"R"},{"date":"2026-04-19","day":19,"dayName":"dim.","code":"R"},{"date":"2026-04-20","day":20,"dayName":"lun.","code":"4"},{"date":"2026-04-21","day":21,"dayName":"mar.","code":"4"},{"date":"2026-04-22","day":22,"dayName":"mer.","code":"4"},{"date":"2026-04-23","day":23,"dayName":"jeu.","code":"4"},{"date":"2026-04-24","day":24,"dayName":"ven.","code":"4"},{"date":"2026-04-25","day":25,"dayName":"sam.","code":""},{"date":"2026-04-26","day":26,"dayName":"dim.","code":"R"},{"date":"2026-04-27","day":27,"dayName":"lun.","code":"R"},{"date":"2026-04-28","day":28,"dayName":"mar.","code":"F"},{"date":"2026-04-29","day":29,"dayName":"mer.","code":"F"},{"date":"2026-04-30","day":30,"dayName":"jeu.","code":"RCN"}],"MAI":[{"date":"2026-05-01","day":1,"dayName":"ven.","code":"JF2"},{"date":"2026-05-02","day":2,"dayName":"sam.","code":"R"},{"date":"2026-05-03","day":3,"dayName":"dim.","code":"R"},{"date":"2026-05-04","day":4,"dayName":"lun.","code":"3"},{"date":"2026-05-05","day":5,"dayName":"mar.","code":"3"},{"date":"2026-05-06","day":6,"dayName":"mer.","code":"3"},{"date":"2026-05-07","day":7,"dayName":"jeu.","code":"RTT"},{"date":"2026-05-08","day":8,"dayName":"ven.","code":"JF3"},{"date":"2026-05-09","day":9,"dayName":"sam.","code":"R"},{"date":"2026-05-10","day":10,"dayName":"dim.","code":"R"},{"date":"2026-05-11","day":11,"dayName":"lun.","code":"R"},{"date":"2026-05-12","day":12,"dayName":"mar.","code":"1"},{"date":"2026-05-13","day":13,"dayName":"mer.","code":"1"},{"date":"2026-05-14","day":14,"dayName":"jeu.","code":"1"},{"date":"2026-05-15","day":15,"dayName":"ven.","code":"A/2"},{"date":"2026-05-16","day":16,"dayName":"sam.","code":"A"},{"date":"2026-05-17","day":17,"dayName":"dim.","code":"A"},{"date":"2026-05-18","day":18,"dayName":"lun.","code":"R"},{"date":"2026-05-19","day":19,"dayName":"mar.","code":"R"},{"date":"2026-05-20","day":20,"dayName":"mer.","code":"RCN"},{"date":"2026-05-21","day":21,"dayName":"jeu.","code":"RTT"},{"date":"2026-05-22","day":22,"dayName":"ven.","code":"R"},{"date":"2026-05-23","day":23,"dayName":"sam.","code":"R"},{"date":"2026-05-24","day":24,"dayName":"dim.","code":"R"},{"date":"2026-05-25","day":25,"dayName":"lun.","code":"JF4"},{"date":"2026-05-26","day":26,"dayName":"mar.","code":"3"},{"date":"2026-05-27","day":27,"dayName":"mer.","code":"3"},{"date":"2026-05-28","day":28,"dayName":"jeu.","code":"3"},{"date":"2026-05-29","day":29,"dayName":"ven.","code":"3"},{"date":"2026-05-30","day":30,"dayName":"sam.","code":""},{"date":"2026-05-31","day":31,"dayName":"dim.","code":"R"}],"JUIN":[{"date":"2026-06-01","day":1,"dayName":"lun.","code":"R"},{"date":"2026-06-02","day":2,"dayName":"mar.","code":"1"},{"date":"2026-06-03","day":3,"dayName":"mer.","code":"1"},{"date":"2026-06-04","day":4,"dayName":"jeu.","code":"1"},{"date":"2026-06-05","day":5,"dayName":"ven.","code":"1"},{"date":"2026-06-06","day":6,"dayName":"sam.","code":"1"},{"date":"2026-06-07","day":7,"dayName":"dim.","code":"A"},{"date":"2026-06-08","day":8,"dayName":"lun.","code":"R"},{"date":"2026-06-09","day":9,"dayName":"mar.","code":"R"},{"date":"2026-06-10","day":10,"dayName":"mer.","code":"2"},{"date":"2026-06-11","day":11,"dayName":"jeu.","code":"2"},{"date":"2026-06-12","day":12,"dayName":"ven.","code":"R"},{"date":"2026-06-13","day":13,"dayName":"sam.","code":"R"},{"date":"2026-06-14","day":14,"dayName":"dim.","code":"R"},{"date":"2026-06-15","day":15,"dayName":"lun.","code":"2"},{"date":"2026-06-16","day":16,"dayName":"mar.","code":"2"},{"date":"2026-06-17","day":17,"dayName":"mer.","code":"2"},{"date":"2026-06-18","day":18,"dayName":"jeu.","code":"2"},{"date":"2026-06-19","day":19,"dayName":"ven.","code":"1"},{"date":"2026-06-20","day":20,"dayName":"sam.","code":"R"},{"date":"2026-06-21","day":21,"dayName":"dim.","code":"R"},{"date":"2026-06-22","day":22,"dayName":"lun.","code":"4"},{"date":"2026-06-23","day":23,"dayName":"mar.","code":"4"},{"date":"2026-06-24","day":24,"dayName":"mer.","code":"4"},{"date":"2026-06-25","day":25,"dayName":"jeu.","code":"4"},{"date":"2026-06-26","day":26,"dayName":"ven.","code":"4"},{"date":"2026-06-27","day":27,"dayName":"sam.","code":""},{"date":"2026-06-28","day":28,"dayName":"dim.","code":"R"},{"date":"2026-06-29","day":29,"dayName":"lun.","code":"R"},{"date":"2026-06-30","day":30,"dayName":"mar.","code":"F"}],"JUILLET":[{"date":"2026-07-01","day":1,"dayName":"mer.","code":"F"},{"date":"2026-07-02","day":2,"dayName":"jeu.","code":"F"},{"date":"2026-07-03","day":3,"dayName":"ven.","code":"F"},{"date":"2026-07-04","day":4,"dayName":"sam.","code":"R"},{"date":"2026-07-05","day":5,"dayName":"dim.","code":"R"},{"date":"2026-07-06","day":6,"dayName":"lun.","code":"C"},{"date":"2026-07-07","day":7,"dayName":"mar.","code":"C"},{"date":"2026-07-08","day":8,"dayName":"mer.","code":"C"},{"date":"2026-07-09","day":9,"dayName":"jeu.","code":"C"},{"date":"2026-07-10","day":10,"dayName":"ven.","code":"C"},{"date":"2026-07-11","day":11,"dayName":"sam.","code":"R"},{"date":"2026-07-12","day":12,"dayName":"dim.","code":"R"},{"date":"2026-07-13","day":13,"dayName":"lun.","code":""},{"date":"2026-07-14","day":14,"dayName":"mar.","code":"JF5"},{"date":"2026-07-15","day":15,"dayName":"mer.","code":""},{"date":"2026-07-16","day":16,"dayName":"jeu.","code":""},{"date":"2026-07-17","day":17,"dayName":"ven.","code":""},{"date":"2026-07-18","day":18,"dayName":"sam.","code":"R"},{"date":"2026-07-19","day":19,"dayName":"dim.","code":"R"},{"date":"2026-07-20","day":20,"dayName":"lun.","code":"4"},{"date":"2026-07-21","day":21,"dayName":"mar.","code":"4"},{"date":"2026-07-22","day":22,"dayName":"mer.","code":"4"},{"date":"2026-07-23","day":23,"dayName":"jeu.","code":"4"},{"date":"2026-07-24","day":24,"dayName":"ven.","code":"4"},{"date":"2026-07-25","day":25,"dayName":"sam.","code":""},{"date":"2026-07-26","day":26,"dayName":"dim.","code":"R"},{"date":"2026-07-27","day":27,"dayName":"lun.","code":"3"},{"date":"2026-07-28","day":28,"dayName":"mar.","code":"3"},{"date":"2026-07-29","day":29,"dayName":"mer.","code":"3"},{"date":"2026-07-30","day":30,"dayName":"jeu.","code":"3"},{"date":"2026-07-31","day":31,"dayName":"ven.","code":"3"}],"AOUT":[{"date":"2026-08-01","day":1,"dayName":"sam.","code":""},{"date":"2026-08-02","day":2,"dayName":"dim.","code":"R"},{"date":"2026-08-03","day":3,"dayName":"lun.","code":""},{"date":"2026-08-04","day":4,"dayName":"mar.","code":""},{"date":"2026-08-05","day":5,"dayName":"mer.","code":""},{"date":"2026-08-06","day":6,"dayName":"jeu.","code":""},{"date":"2026-08-07","day":7,"dayName":"ven.","code":""},{"date":"2026-08-08","day":8,"dayName":"sam.","code":"R"},{"date":"2026-08-09","day":9,"dayName":"dim.","code":"R"},{"date":"2026-08-10","day":10,"dayName":"lun.","code":""},{"date":"2026-08-11","day":11,"dayName":"mar.","code":""},{"date":"2026-08-12","day":12,"dayName":"mer.","code":""},{"date":"2026-08-13","day":13,"dayName":"jeu.","code":""},{"date":"2026-08-14","day":14,"dayName":"ven.","code":""},{"date":"2026-08-15","day":15,"dayName":"sam.","code":"R"},{"date":"2026-08-16","day":16,"dayName":"dim.","code":"R"},{"date":"2026-08-17","day":17,"dayName":"lun.","code":"3"},{"date":"2026-08-18","day":18,"dayName":"mar.","code":"3"},{"date":"2026-08-19","day":19,"dayName":"mer.","code":"3"},{"date":"2026-08-20","day":20,"dayName":"jeu.","code":"3"},{"date":"2026-08-21","day":21,"dayName":"ven.","code":"3"},{"date":"2026-08-22","day":22,"dayName":"sam.","code":""},{"date":"2026-08-23","day":23,"dayName":"dim.","code":"R"},{"date":"2026-08-24","day":24,"dayName":"lun.","code":"R"},{"date":"2026-08-25","day":25,"dayName":"mar.","code":"1"},{"date":"2026-08-26","day":26,"dayName":"mer.","code":"1"},{"date":"2026-08-27","day":27,"dayName":"jeu.","code":"1"},{"date":"2026-08-28","day":28,"dayName":"ven.","code":"1"},{"date":"2026-08-29","day":29,"dayName":"sam.","code":"1"},{"date":"2026-08-30","day":30,"dayName":"dim.","code":"A"},{"date":"2026-08-31","day":31,"dayName":"lun.","code":"2"}],"SEPTEMBRE":[{"date":"2026-09-01","day":1,"dayName":"mar.","code":"2"},{"date":"2026-09-02","day":2,"dayName":"mer.","code":"2"},{"date":"2026-09-03","day":3,"dayName":"jeu.","code":"2"},{"date":"2026-09-04","day":4,"dayName":"ven.","code":"2"},{"date":"2026-09-05","day":5,"dayName":"sam.","code":"R"},{"date":"2026-09-06","day":6,"dayName":"dim.","code":"R"},{"date":"2026-09-07","day":7,"dayName":"lun.","code":"4"},{"date":"2026-09-08","day":8,"dayName":"mar.","code":"4"},{"date":"2026-09-09","day":9,"dayName":"mer.","code":"4"},{"date":"2026-09-10","day":10,"dayName":"jeu.","code":"4"},{"date":"2026-09-11","day":11,"dayName":"ven.","code":"4"},{"date":"2026-09-12","day":12,"dayName":"sam.","code":""},{"date":"2026-09-13","day":13,"dayName":"dim.","code":"R"},{"date":"2026-09-14","day":14,"dayName":"lun.","code":"3"},{"date":"2026-09-15","day":15,"dayName":"mar.","code":"3"},{"date":"2026-09-16","day":16,"dayName":"mer.","code":"3"},{"date":"2026-09-17","day":17,"dayName":"jeu.","code":"3"},{"date":"2026-09-18","day":18,"dayName":"ven.","code":"3"},{"date":"2026-09-19","day":19,"dayName":"sam.","code":""},{"date":"2026-09-20","day":20,"dayName":"dim.","code":"R"},{"date":"2026-09-21","day":21,"dayName":"lun.","code":"2"},{"date":"2026-09-22","day":22,"dayName":"mar.","code":"2"},{"date":"2026-09-23","day":23,"dayName":"mer.","code":"2"},{"date":"2026-09-24","day":24,"dayName":"jeu.","code":"R"},{"date":"2026-09-25","day":25,"dayName":"ven.","code":"RCN"},{"date":"2026-09-26","day":26,"dayName":"sam.","code":"R"},{"date":"2026-09-27","day":27,"dayName":"dim.","code":"R"},{"date":"2026-09-28","day":28,"dayName":"lun.","code":"2"},{"date":"2026-09-29","day":29,"dayName":"mar.","code":"2"},{"date":"2026-09-30","day":30,"dayName":"mer.","code":"2"},{"date":"2026-09-31","day":31,"dayName":"","code":""}],"OCTOBRE":[{"date":"2026-10-01","day":1,"dayName":"jeu.","code":"2"},{"date":"2026-10-02","day":2,"dayName":"ven.","code":"2"},{"date":"2026-10-03","day":3,"dayName":"sam.","code":"R"},{"date":"2026-10-04","day":4,"dayName":"dim.","code":"R"},{"date":"2026-10-05","day":5,"dayName":"lun.","code":"R"},{"date":"2026-10-06","day":6,"dayName":"mar.","code":"1"},{"date":"2026-10-07","day":7,"dayName":"mer.","code":"1"},{"date":"2026-10-08","day":8,"dayName":"jeu.","code":"1"},{"date":"2026-10-09","day":9,"dayName":"ven.","code":"1"},{"date":"2026-10-10","day":10,"dayName":"sam.","code":"1"},{"date":"2026-10-11","day":11,"dayName":"dim.","code":"A"},{"date":"2026-10-12","day":12,"dayName":"lun.","code":"R"},{"date":"2026-10-13","day":13,"dayName":"mar.","code":"R"},{"date":"2026-10-14","day":14,"dayName":"mer.","code":"R"},{"date":"2026-10-15","day":15,"dayName":"jeu.","code":"F"},{"date":"2026-10-16","day":16,"dayName":"ven.","code":"R"},{"date":"2026-10-17","day":17,"dayName":"sam.","code":"R"},{"date":"2026-10-18","day":18,"dayName":"dim.","code":"R"},{"date":"2026-10-19","day":19,"dayName":"lun.","code":"R"},{"date":"2026-10-20","day":20,"dayName":"mar.","code":"1"},{"date":"2026-10-21","day":21,"dayName":"mer.","code":"1"},{"date":"2026-10-22","day":22,"dayName":"jeu.","code":"1"},{"date":"2026-10-23","day":23,"dayName":"ven.","code":"1"},{"date":"2026-10-24","day":24,"dayName":"sam.","code":"1"},{"date":"2026-10-25","day":25,"dayName":"dim.","code":"A"},{"date":"2026-10-26","day":26,"dayName":"lun.","code":"2"},{"date":"2026-10-27","day":27,"dayName":"mar.","code":"2"},{"date":"2026-10-28","day":28,"dayName":"mer.","code":"2"},{"date":"2026-10-29","day":29,"dayName":"jeu.","code":"2"},{"date":"2026-10-30","day":30,"dayName":"ven.","code":"2"},{"date":"2026-10-31","day":31,"dayName":"sam.","code":"R"}],"NOVEMBRE":[{"date":"2026-11-01","day":1,"dayName":"dim.","code":"R"},{"date":"2026-11-02","day":2,"dayName":"lun.","code":"4"},{"date":"2026-11-03","day":3,"dayName":"mar.","code":"4"},{"date":"2026-11-04","day":4,"dayName":"mer.","code":"4"},{"date":"2026-11-05","day":5,"dayName":"jeu.","code":"4"},{"date":"2026-11-06","day":6,"dayName":"ven.","code":"4"},{"date":"2026-11-07","day":7,"dayName":"sam.","code":""},{"date":"2026-11-08","day":8,"dayName":"dim.","code":"R"},{"date":"2026-11-09","day":9,"dayName":"lun.","code":"3"},{"date":"2026-11-10","day":10,"dayName":"mar.","code":"3"},{"date":"2026-11-11","day":11,"dayName":"mer.","code":"R"},{"date":"2026-11-12","day":12,"dayName":"jeu.","code":"3"},{"date":"2026-11-13","day":13,"dayName":"ven.","code":"3"},{"date":"2026-11-14","day":14,"dayName":"sam.","code":""},{"date":"2026-11-15","day":15,"dayName":"dim.","code":"R"},{"date":"2026-11-16","day":16,"dayName":"lun.","code":"R"},{"date":"2026-11-17","day":17,"dayName":"mar.","code":"1"},{"date":"2026-11-18","day":18,"dayName":"mer.","code":"1"},{"date":"2026-11-19","day":19,"dayName":"jeu.","code":"1"},{"date":"2026-11-20","day":20,"dayName":"ven.","code":"1"},{"date":"2026-11-21","day":21,"dayName":"sam.","code":"1"},{"date":"2026-11-22","day":22,"dayName":"dim.","code":"A"},{"date":"2026-11-23","day":23,"dayName":"lun.","code":"R"},{"date":"2026-11-24","day":24,"dayName":"mar.","code":"R"},{"date":"2026-11-25","day":25,"dayName":"mer.","code":"F"},{"date":"2026-11-26","day":26,"dayName":"jeu.","code":"R"},{"date":"2026-11-27","day":27,"dayName":"ven.","code":"R"},{"date":"2026-11-28","day":28,"dayName":"sam.","code":"R"},{"date":"2026-11-29","day":29,"dayName":"dim.","code":"R"},{"date":"2026-11-30","day":30,"dayName":"lun.","code":"2"},{"date":"2026-11-31","day":31,"dayName":"","code":""}],"DECEMBRE":[{"date":"2026-12-01","day":1,"dayName":"mar.","code":"2"},{"date":"2026-12-02","day":2,"dayName":"mer.","code":"2"},{"date":"2026-12-03","day":3,"dayName":"jeu.","code":"R"},{"date":"2026-12-04","day":4,"dayName":"ven.","code":"R"},{"date":"2026-12-05","day":5,"dayName":"sam.","code":"R"},{"date":"2026-12-06","day":6,"dayName":"dim.","code":"R"},{"date":"2026-12-07","day":7,"dayName":"lun.","code":"4"},{"date":"2026-12-08","day":8,"dayName":"mar.","code":"4"},{"date":"2026-12-09","day":9,"dayName":"mer.","code":"4"},{"date":"2026-12-10","day":10,"dayName":"jeu.","code":"4"},{"date":"2026-12-11","day":11,"dayName":"ven.","code":"4"},{"date":"2026-12-12","day":12,"dayName":"sam.","code":""},{"date":"2026-12-13","day":13,"dayName":"dim.","code":"R"},{"date":"2026-12-14","day":14,"dayName":"lun.","code":"3"},{"date":"2026-12-15","day":15,"dayName":"mar.","code":"3"},{"date":"2026-12-16","day":16,"dayName":"mer.","code":"3"},{"date":"2026-12-17","day":17,"dayName":"jeu.","code":"3"},{"date":"2026-12-18","day":18,"dayName":"ven.","code":"3"},{"date":"2026-12-19","day":19,"dayName":"sam.","code":""},{"date":"2026-12-20","day":20,"dayName":"dim.","code":"R"},{"date":"2026-12-21","day":21,"dayName":"lun.","code":"R"},{"date":"2026-12-22","day":22,"dayName":"mar.","code":"1"},{"date":"2026-12-23","day":23,"dayName":"mer.","code":"1"},{"date":"2026-12-24","day":24,"dayName":"jeu.","code":"1"},{"date":"2026-12-25","day":25,"dayName":"ven.","code":"1"},{"date":"2026-12-26","day":26,"dayName":"sam.","code":"A"},{"date":"2026-12-27","day":27,"dayName":"dim.","code":"A"},{"date":"2026-12-28","day":28,"dayName":"lun.","code":"R"},{"date":"2026-12-29","day":29,"dayName":"mar.","code":"R"},{"date":"2026-12-30","day":30,"dayName":"mer.","code":"F"},{"date":"2026-12-31","day":31,"dayName":"jeu.","code":"R"}]},"HUGUES Corentin":{"JANVIER":[{"date":"2026-01-01","day":1,"dayName":"jeu.","code":"JF1"},{"date":"2026-01-02","day":2,"dayName":"ven.","code":"C"},{"date":"2026-01-03","day":3,"dayName":"sam.","code":"R"},{"date":"2026-01-04","day":4,"dayName":"dim.","code":"R"},{"date":"2026-01-05","day":5,"dayName":"lun.","code":"3"},{"date":"2026-01-06","day":6,"dayName":"mar.","code":"3"},{"date":"2026-01-07","day":7,"dayName":"mer.","code":"3"},{"date":"2026-01-08","day":8,"dayName":"jeu.","code":"3"},{"date":"2026-01-09","day":9,"dayName":"ven.","code":"3"},{"date":"2026-01-10","day":10,"dayName":"sam.","code":""},{"date":"2026-01-11","day":11,"dayName":"dim.","code":"R"},{"date":"2026-01-12","day":12,"dayName":"lun.","code":"R"},{"date":"2026-01-13","day":13,"dayName":"mar.","code":"1"},{"date":"2026-01-14","day":14,"dayName":"mer.","code":"1"},{"date":"2026-01-15","day":15,"dayName":"jeu.","code":"1"},{"date":"2026-01-16","day":16,"dayName":"ven.","code":"1"},{"date":"2026-01-17","day":17,"dayName":"sam.","code":"1"},{"date":"2026-01-18","day":18,"dayName":"dim.","code":"A"},{"date":"2026-01-19","day":19,"dayName":"lun.","code":"2"},{"date":"2026-01-20","day":20,"dayName":"mar.","code":"2"},{"date":"2026-01-21","day":21,"dayName":"mer.","code":"2"},{"date":"2026-01-22","day":22,"dayName":"jeu.","code":"2"},{"date":"2026-01-23","day":23,"dayName":"ven.","code":"2"},{"date":"2026-01-24","day":24,"dayName":"sam.","code":"R"},{"date":"2026-01-25","day":25,"dayName":"dim.","code":"R"},{"date":"2026-01-26","day":26,"dayName":"lun.","code":"4"},{"date":"2026-01-27","day":27,"dayName":"mar.","code":"4"},{"date":"2026-01-28","day":28,"dayName":"mer.","code":"4"},{"date":"2026-01-29","day":29,"dayName":"jeu.","code":"4"},{"date":"2026-01-30","day":30,"dayName":"ven.","code":"4"},{"date":"2026-01-31","day":31,"dayName":"sam.","code":""}],"FEVRIER":[{"date":"2026-02-01","day":1,"dayName":"dim.","code":"R"},{"date":"2026-02-02","day":2,"dayName":"lun.","code":"R"},{"date":"2026-02-03","day":3,"dayName":"mar.","code":"C"},{"date":"2026-02-04","day":4,"dayName":"mer.","code":"f/rtt"},{"date":"2026-02-05","day":5,"dayName":"jeu.","code":"f/rtt"},{"date":"2026-02-06","day":6,"dayName":"ven.","code":"3"},{"date":"2026-02-07","day":7,"dayName":"sam.","code":"R"},{"date":"2026-02-08","day":8,"dayName":"dim.","code":"R"},{"date":"2026-02-09","day":9,"dayName":"lun.","code":"3"},{"date":"2026-02-10","day":10,"dayName":"mar.","code":"3"},{"date":"2026-02-11","day":11,"dayName":"mer.","code":"3"},{"date":"2026-02-12","day":12,"dayName":"jeu.","code":"3"},{"date":"2026-02-13","day":13,"dayName":"ven.","code":"3"},{"date":"2026-02-14","day":14,"dayName":"sam.","code":""},{"date":"2026-02-15","day":15,"dayName":"dim.","code":"R"},{"date":"2026-02-16","day":16,"dayName":"lun.","code":"R"},{"date":"2026-02-17","day":17,"dayName":"mar.","code":"1"},{"date":"2026-02-18","day":18,"dayName":"mer.","code":"1"},{"date":"2026-02-19","day":19,"dayName":"jeu.","code":"1"},{"date":"2026-02-20","day":20,"dayName":"ven.","code":"1"},{"date":"2026-02-21","day":21,"dayName":"sam.","code":"1"},{"date":"2026-02-22","day":22,"dayName":"dim.","code":"A"},{"date":"2026-02-23","day":23,"dayName":"lun.","code":"RTT"},{"date":"2026-02-24","day":24,"dayName":"mar.","code":"RTT"},{"date":"2026-02-25","day":25,"dayName":"mer.","code":"RTT"},{"date":"2026-02-26","day":26,"dayName":"jeu.","code":"RTT"},{"date":"2026-02-27","day":27,"dayName":"ven.","code":"RTT"},{"date":"2026-02-28","day":28,"dayName":"sam.","code":"R"}],"MARS":[{"date":"2026-03-01","day":1,"dayName":"dim.","code":"R"},{"date":"2026-03-02","day":2,"dayName":"lun.","code":"4"},{"date":"2026-03-03","day":3,"dayName":"mar.","code":"4"},{"date":"2026-03-04","day":4,"dayName":"mer.","code":"4"},{"date":"2026-03-05","day":5,"dayName":"jeu.","code":"4"},{"date":"2026-03-06","day":6,"dayName":"ven.","code":"4"},{"date":"2026-03-07","day":7,"dayName":"sam.","code":""},{"date":"2026-03-08","day":8,"dayName":"dim.","code":"R"},{"date":"2026-03-09","day":9,"dayName":"lun.","code":"R"},{"date":"2026-03-10","day":10,"dayName":"mar.","code":"F"},{"date":"2026-03-11","day":11,"dayName":"mer.","code":"f/rtt"},{"date":"2026-03-12","day":12,"dayName":"jeu.","code":"F"},{"date":"2026-03-13","day":13,"dayName":"ven.","code":"R"},{"date":"2026-03-14","day":14,"dayName":"sam.","code":"R"},{"date":"2026-03-15","day":15,"dayName":"dim.","code":"R"},{"date":"2026-03-16","day":16,"dayName":"lun.","code":"3"},{"date":"2026-03-17","day":17,"dayName":"mar.","code":"3"},{"date":"2026-03-18","day":18,"dayName":"mer.","code":"3"},{"date":"2026-03-19","day":19,"dayName":"jeu.","code":"3"},{"date":"2026-03-20","day":20,"dayName":"ven.","code":"3"},{"date":"2026-03-21","day":21,"dayName":"sam.","code":""},{"date":"2026-03-22","day":22,"dayName":"dim.","code":"R"},{"date":"2026-03-23","day":23,"dayName":"lun.","code":"R"},{"date":"2026-03-24","day":24,"dayName":"mar.","code":"1"},{"date":"2026-03-25","day":25,"dayName":"mer.","code":"1"},{"date":"2026-03-26","day":26,"dayName":"jeu.","code":"1"},{"date":"2026-03-27","day":27,"dayName":"ven.","code":"1"},{"date":"2026-03-28","day":28,"dayName":"sam.","code":"1"},{"date":"2026-03-29","day":29,"dayName":"dim.","code":"A"},{"date":"2026-03-30","day":30,"dayName":"lun.","code":"RTT"},{"date":"2026-03-31","day":31,"dayName":"mar.","code":"2"}],"AVRIL":[{"date":"2026-04-01","day":1,"dayName":"mer.","code":"2"},{"date":"2026-04-02","day":2,"dayName":"jeu.","code":"2"},{"date":"2026-04-03","day":3,"dayName":"ven.","code":"2"},{"date":"2026-04-04","day":4,"dayName":"sam.","code":"R"},{"date":"2026-04-05","day":5,"dayName":"dim.","code":"R"},{"date":"2026-04-06","day":6,"dayName":"lun.","code":"JF2"},{"date":"2026-04-07","day":7,"dayName":"mar.","code":"4"},{"date":"2026-04-08","day":8,"dayName":"mer.","code":"4"},{"date":"2026-04-09","day":9,"dayName":"jeu.","code":"4"},{"date":"2026-04-10","day":10,"dayName":"ven.","code":"4"},{"date":"2026-04-11","day":11,"dayName":"sam.","code":""},{"date":"2026-04-12","day":12,"dayName":"dim.","code":"R"},{"date":"2026-04-13","day":13,"dayName":"lun.","code":"R"},{"date":"2026-04-14","day":14,"dayName":"mar.","code":"R"},{"date":"2026-04-15","day":15,"dayName":"mer.","code":"RTT"},{"date":"2026-04-16","day":16,"dayName":"jeu.","code":"RTT"},{"date":"2026-04-17","day":17,"dayName":"ven.","code":"R"},{"date":"2026-04-18","day":18,"dayName":"sam.","code":"R"},{"date":"2026-04-19","day":19,"dayName":"dim.","code":"R"},{"date":"2026-04-20","day":20,"dayName":"lun.","code":"3"},{"date":"2026-04-21","day":21,"dayName":"mar.","code":"3"},{"date":"2026-04-22","day":22,"dayName":"mer.","code":"3"},{"date":"2026-04-23","day":23,"dayName":"jeu.","code":"3"},{"date":"2026-04-24","day":24,"dayName":"ven.","code":"3"},{"date":"2026-04-25","day":25,"dayName":"sam.","code":""},{"date":"2026-04-26","day":26,"dayName":"dim.","code":"R"},{"date":"2026-04-27","day":27,"dayName":"lun.","code":"R"},{"date":"2026-04-28","day":28,"dayName":"mar.","code":"1"},{"date":"2026-04-29","day":29,"dayName":"mer.","code":"1"},{"date":"2026-04-30","day":30,"dayName":"jeu.","code":"1"}],"MAI":[{"date":"2026-05-01","day":1,"dayName":"ven.","code":"1"},{"date":"2026-05-02","day":2,"dayName":"sam.","code":"A"},{"date":"2026-05-03","day":3,"dayName":"dim.","code":"A"},{"date":"2026-05-04","day":4,"dayName":"lun.","code":"R"},{"date":"2026-05-05","day":5,"dayName":"mar.","code":"R"},{"date":"2026-05-06","day":6,"dayName":"mer.","code":"RTT"},{"date":"2026-05-07","day":7,"dayName":"jeu.","code":"3"},{"date":"2026-05-08","day":8,"dayName":"ven.","code":"JF3"},{"date":"2026-05-09","day":9,"dayName":"sam.","code":""},{"date":"2026-05-10","day":10,"dayName":"dim.","code":"R"},{"date":"2026-05-11","day":11,"dayName":"lun.","code":"2"},{"date":"2026-05-12","day":12,"dayName":"mar.","code":"2"},{"date":"2026-05-13","day":13,"dayName":"mer.","code":"2"},{"date":"2026-05-14","day":14,"dayName":"jeu.","code":"JF4"},{"date":"2026-05-15","day":15,"dayName":"ven.","code":"RTT"},{"date":"2026-05-16","day":16,"dayName":"sam.","code":"1"},{"date":"2026-05-17","day":17,"dayName":"dim.","code":"R"},{"date":"2026-05-18","day":18,"dayName":"lun.","code":"4"},{"date":"2026-05-19","day":19,"dayName":"mar.","code":"4"},{"date":"2026-05-20","day":20,"dayName":"mer.","code":"4"},{"date":"2026-05-21","day":21,"dayName":"jeu.","code":"4"},{"date":"2026-05-22","day":22,"dayName":"ven.","code":"4"},{"date":"2026-05-23","day":23,"dayName":"sam.","code":""},{"date":"2026-05-24","day":24,"dayName":"dim.","code":"R"},{"date":"2026-05-25","day":25,"dayName":"lun.","code":"JF5"},{"date":"2026-05-26","day":26,"dayName":"mar.","code":"F"},{"date":"2026-05-27","day":27,"dayName":"mer.","code":"C"},{"date":"2026-05-28","day":28,"dayName":"jeu.","code":"C"},{"date":"2026-05-29","day":29,"dayName":"ven.","code":"R"},{"date":"2026-05-30","day":30,"dayName":"sam.","code":"R"},{"date":"2026-05-31","day":31,"dayName":"dim.","code":"R"}],"JUIN":[{"date":"2026-06-01","day":1,"dayName":"lun.","code":"3"},{"date":"2026-06-02","day":2,"dayName":"mar.","code":"3"},{"date":"2026-06-03","day":3,"dayName":"mer.","code":"3"},{"date":"2026-06-04","day":4,"dayName":"jeu.","code":"3"},{"date":"2026-06-05","day":5,"dayName":"ven.","code":"3"},{"date":"2026-06-06","day":6,"dayName":"sam.","code":""},{"date":"2026-06-07","day":7,"dayName":"dim.","code":"R"},{"date":"2026-06-08","day":8,"dayName":"lun.","code":"R"},{"date":"2026-06-09","day":9,"dayName":"mar.","code":"1"},{"date":"2026-06-10","day":10,"dayName":"mer.","code":"1"},{"date":"2026-06-11","day":11,"dayName":"jeu.","code":"1"},{"date":"2026-06-12","day":12,"dayName":"ven.","code":"1"},{"date":"2026-06-13","day":13,"dayName":"sam.","code":"1"},{"date":"2026-06-14","day":14,"dayName":"dim.","code":"A"},{"date":"2026-06-15","day":15,"dayName":"lun.","code":"R"},{"date":"2026-06-16","day":16,"dayName":"mar.","code":"R"},{"date":"2026-06-17","day":17,"dayName":"mer.","code":"C"},{"date":"2026-06-18","day":18,"dayName":"jeu.","code":"C"},{"date":"2026-06-19","day":19,"dayName":"ven.","code":"R"},{"date":"2026-06-20","day":20,"dayName":"sam.","code":"R"},{"date":"2026-06-21","day":21,"dayName":"dim.","code":"R"},{"date":"2026-06-22","day":22,"dayName":"lun.","code":"2"},{"date":"2026-06-23","day":23,"dayName":"mar.","code":"2"},{"date":"2026-06-24","day":24,"dayName":"mer.","code":"2"},{"date":"2026-06-25","day":25,"dayName":"jeu.","code":"2"},{"date":"2026-06-26","day":26,"dayName":"ven.","code":"2"},{"date":"2026-06-27","day":27,"dayName":"sam.","code":"R"},{"date":"2026-06-28","day":28,"dayName":"dim.","code":"R"},{"date":"2026-06-29","day":29,"dayName":"lun.","code":"4"},{"date":"2026-06-30","day":30,"dayName":"mar.","code":"4"}],"JUILLET":[{"date":"2026-07-01","day":1,"dayName":"mer.","code":"4"},{"date":"2026-07-02","day":2,"dayName":"jeu.","code":"4"},{"date":"2026-07-03","day":3,"dayName":"ven.","code":"4"},{"date":"2026-07-04","day":4,"dayName":"sam.","code":""},{"date":"2026-07-05","day":5,"dayName":"dim.","code":"R"},{"date":"2026-07-06","day":6,"dayName":"lun.","code":"3"},{"date":"2026-07-07","day":7,"dayName":"mar.","code":"3"},{"date":"2026-07-08","day":8,"dayName":"mer.","code":"3"},{"date":"2026-07-09","day":9,"dayName":"jeu.","code":"3"},{"date":"2026-07-10","day":10,"dayName":"ven.","code":"3"},{"date":"2026-07-11","day":11,"dayName":"sam.","code":""},{"date":"2026-07-12","day":12,"dayName":"dim.","code":"R"},{"date":"2026-07-13","day":13,"dayName":"lun.","code":"3"},{"date":"2026-07-14","day":14,"dayName":"mar.","code":"R"},{"date":"2026-07-15","day":15,"dayName":"mer.","code":"3"},{"date":"2026-07-16","day":16,"dayName":"jeu.","code":"3"},{"date":"2026-07-17","day":17,"dayName":"ven.","code":"3"},{"date":"2026-07-18","day":18,"dayName":"sam.","code":""},{"date":"2026-07-19","day":19,"dayName":"dim.","code":"R"},{"date":"2026-07-20","day":20,"dayName":"lun.","code":"R"},{"date":"2026-07-21","day":21,"dayName":"mar.","code":"1"},{"date":"2026-07-22","day":22,"dayName":"mer.","code":"1"},{"date":"2026-07-23","day":23,"dayName":"jeu.","code":"1"},{"date":"2026-07-24","day":24,"dayName":"ven.","code":"1"},{"date":"2026-07-25","day":25,"dayName":"sam.","code":"1"},{"date":"2026-07-26","day":26,"dayName":"dim.","code":"A"},{"date":"2026-07-27","day":27,"dayName":"lun.","code":"2"},{"date":"2026-07-28","day":28,"dayName":"mar.","code":"2"},{"date":"2026-07-29","day":29,"dayName":"mer.","code":"2"},{"date":"2026-07-30","day":30,"dayName":"jeu.","code":"2"},{"date":"2026-07-31","day":31,"dayName":"ven.","code":"2"}],"AOUT":[{"date":"2026-08-01","day":1,"dayName":"sam.","code":"R"},{"date":"2026-08-02","day":2,"dayName":"dim.","code":"R"},{"date":"2026-08-03","day":3,"dayName":"lun.","code":"3"},{"date":"2026-08-04","day":4,"dayName":"mar.","code":"3"},{"date":"2026-08-05","day":5,"dayName":"mer.","code":""},{"date":"2026-08-06","day":6,"dayName":"jeu.","code":""},{"date":"2026-08-07","day":7,"dayName":"ven.","code":""},{"date":"2026-08-08","day":8,"dayName":"sam.","code":""},{"date":"2026-08-09","day":9,"dayName":"dim.","code":""},{"date":"2026-08-10","day":10,"dayName":"lun.","code":""},{"date":"2026-08-11","day":11,"dayName":"mar.","code":""},{"date":"2026-08-12","day":12,"dayName":"mer.","code":""},{"date":"2026-08-13","day":13,"dayName":"jeu.","code":""},{"date":"2026-08-14","day":14,"dayName":"ven.","code":""},{"date":"2026-08-15","day":15,"dayName":"sam.","code":""},{"date":"2026-08-16","day":16,"dayName":"dim.","code":""},{"date":"2026-08-17","day":17,"dayName":"lun.","code":""},{"date":"2026-08-18","day":18,"dayName":"mar.","code":""},{"date":"2026-08-19","day":19,"dayName":"mer.","code":""},{"date":"2026-08-20","day":20,"dayName":"jeu.","code":""},{"date":"2026-08-21","day":21,"dayName":"ven.","code":""},{"date":"2026-08-22","day":22,"dayName":"sam.","code":""},{"date":"2026-08-23","day":23,"dayName":"dim.","code":""},{"date":"2026-08-24","day":24,"dayName":"lun.","code":""},{"date":"2026-08-25","day":25,"dayName":"mar.","code":""},{"date":"2026-08-26","day":26,"dayName":"mer.","code":""},{"date":"2026-08-27","day":27,"dayName":"jeu.","code":""},{"date":"2026-08-28","day":28,"dayName":"ven.","code":""},{"date":"2026-08-29","day":29,"dayName":"sam.","code":""},{"date":"2026-08-30","day":30,"dayName":"dim.","code":""},{"date":"2026-08-31","day":31,"dayName":"lun.","code":""}]},"LE CALVEZ Yann":{"JANVIER":[{"date":"2026-01-01","day":1,"dayName":"jeu.","code":"JF1"},{"date":"2026-01-02","day":2,"dayName":"ven.","code":"2"},{"date":"2026-01-03","day":3,"dayName":"sam.","code":"R"},{"date":"2026-01-04","day":4,"dayName":"dim.","code":"R"},{"date":"2026-01-05","day":5,"dayName":"lun.","code":"4"},{"date":"2026-01-06","day":6,"dayName":"mar.","code":"4"},{"date":"2026-01-07","day":7,"dayName":"mer.","code":"4"},{"date":"2026-01-08","day":8,"dayName":"jeu.","code":"4"},{"date":"2026-01-09","day":9,"dayName":"ven.","code":"4"},{"date":"2026-01-10","day":10,"dayName":"sam.","code":""},{"date":"2026-01-11","day":11,"dayName":"dim.","code":"R"},{"date":"2026-01-12","day":12,"dayName":"lun.","code":"R"},{"date":"2026-01-13","day":13,"dayName":"mar.","code":"F"},{"date":"2026-01-14","day":14,"dayName":"mer.","code":"F"},{"date":"2026-01-15","day":15,"dayName":"jeu.","code":"F"},{"date":"2026-01-16","day":16,"dayName":"ven.","code":"R"},{"date":"2026-01-17","day":17,"dayName":"sam.","code":"R"},{"date":"2026-01-18","day":18,"dayName":"dim.","code":"R"},{"date":"2026-01-19","day":19,"dayName":"lun.","code":"3"},{"date":"2026-01-20","day":20,"dayName":"mar.","code":"3"},{"date":"2026-01-21","day":21,"dayName":"mer.","code":"3"},{"date":"2026-01-22","day":22,"dayName":"jeu.","code":"3"},{"date":"2026-01-23","day":23,"dayName":"ven.","code":"3"},{"date":"2026-01-24","day":24,"dayName":"sam.","code":""},{"date":"2026-01-25","day":25,"dayName":"dim.","code":"R"},{"date":"2026-01-26","day":26,"dayName":"lun.","code":"R"},{"date":"2026-01-27","day":27,"dayName":"mar.","code":"1"},{"date":"2026-01-28","day":28,"dayName":"mer.","code":"1"},{"date":"2026-01-29","day":29,"dayName":"jeu.","code":"1"},{"date":"2026-01-30","day":30,"dayName":"ven.","code":"1"},{"date":"2026-01-31","day":31,"dayName":"sam.","code":"1"}],"FEVRIER":[{"date":"2026-02-01","day":1,"dayName":"dim.","code":"A"},{"date":"2026-02-02","day":2,"dayName":"lun.","code":"2"},{"date":"2026-02-03","day":3,"dayName":"mar.","code":"2"},{"date":"2026-02-04","day":4,"dayName":"mer.","code":"2"},{"date":"2026-02-05","day":5,"dayName":"jeu.","code":"2"},{"date":"2026-02-06","day":6,"dayName":"ven.","code":"2"},{"date":"2026-02-07","day":7,"dayName":"sam.","code":"R"},{"date":"2026-02-08","day":8,"dayName":"dim.","code":"R"},{"date":"2026-02-09","day":9,"dayName":"lun.","code":"4"},{"date":"2026-02-10","day":10,"dayName":"mar.","code":"4"},{"date":"2026-02-11","day":11,"dayName":"mer.","code":"4"},{"date":"2026-02-12","day":12,"dayName":"jeu.","code":"4"},{"date":"2026-02-13","day":13,"dayName":"ven.","code":"4"},{"date":"2026-02-14","day":14,"dayName":"sam.","code":""},{"date":"2026-02-15","day":15,"dayName":"dim.","code":"R"},{"date":"2026-02-16","day":16,"dayName":"lun.","code":"4"},{"date":"2026-02-17","day":17,"dayName":"mar.","code":"4"},{"date":"2026-02-18","day":18,"dayName":"mer.","code":"4"},{"date":"2026-02-19","day":19,"dayName":"jeu.","code":"4"},{"date":"2026-02-20","day":20,"dayName":"ven.","code":"4"},{"date":"2026-02-21","day":21,"dayName":"sam.","code":""},{"date":"2026-02-22","day":22,"dayName":"dim.","code":"R"},{"date":"2026-02-23","day":23,"dayName":"lun.","code":"R"},{"date":"2026-02-24","day":24,"dayName":"mar.","code":"RCN"},{"date":"2026-02-25","day":25,"dayName":"mer.","code":"RCN"},{"date":"2026-02-26","day":26,"dayName":"jeu.","code":"RCN"},{"date":"2026-02-27","day":27,"dayName":"ven.","code":"R"},{"date":"2026-02-28","day":28,"dayName":"sam.","code":"R"}],"MARS":[{"date":"2026-03-01","day":1,"dayName":"dim.","code":"R"},{"date":"2026-03-02","day":2,"dayName":"lun.","code":"3"},{"date":"2026-03-03","day":3,"dayName":"mar.","code":"3"},{"date":"2026-03-04","day":4,"dayName":"mer.","code":"3"},{"date":"2026-03-05","day":5,"dayName":"jeu.","code":"3"},{"date":"2026-03-06","day":6,"dayName":"ven.","code":"3"},{"date":"2026-03-07","day":7,"dayName":"sam.","code":""},{"date":"2026-03-08","day":8,"dayName":"dim.","code":"R"},{"date":"2026-03-09","day":9,"dayName":"lun.","code":"R"},{"date":"2026-03-10","day":10,"dayName":"mar.","code":"F"},{"date":"2026-03-11","day":11,"dayName":"mer.","code":"f/c"},{"date":"2026-03-12","day":12,"dayName":"jeu.","code":"f/c"},{"date":"2026-03-13","day":13,"dayName":"ven.","code":"C"},{"date":"2026-03-14","day":14,"dayName":"sam.","code":"R"},{"date":"2026-03-15","day":15,"dayName":"dim.","code":"R"},{"date":"2026-03-16","day":16,"dayName":"lun.","code":"f/rcn"},{"date":"2026-03-17","day":17,"dayName":"mar.","code":"RCN"},{"date":"2026-03-18","day":18,"dayName":"mer.","code":"RCN"},{"date":"2026-03-19","day":19,"dayName":"jeu.","code":"RCN"},{"date":"2026-03-20","day":20,"dayName":"ven.","code":"RCN"},{"date":"2026-03-21","day":21,"dayName":"sam.","code":"R"},{"date":"2026-03-22","day":22,"dayName":"dim.","code":"R"},{"date":"2026-03-23","day":23,"dayName":"lun.","code":"4"},{"date":"2026-03-24","day":24,"dayName":"mar.","code":"4"},{"date":"2026-03-25","day":25,"dayName":"mer.","code":"4"},{"date":"2026-03-26","day":26,"dayName":"jeu.","code":"4"},{"date":"2026-03-27","day":27,"dayName":"ven.","code":"4"},{"date":"2026-03-28","day":28,"dayName":"sam.","code":""},{"date":"2026-03-29","day":29,"dayName":"dim.","code":"R"},{"date":"2026-03-30","day":30,"dayName":"lun.","code":"R"},{"date":"2026-03-31","day":31,"dayName":"mar.","code":"C"}],"AVRIL":[{"date":"2026-04-01","day":1,"dayName":"mer.","code":"C"},{"date":"2026-04-02","day":2,"dayName":"jeu.","code":"C"},{"date":"2026-04-03","day":3,"dayName":"ven.","code":"R"},{"date":"2026-04-04","day":4,"dayName":"sam.","code":"R"},{"date":"2026-04-05","day":5,"dayName":"dim.","code":"R"},{"date":"2026-04-06","day":6,"dayName":"lun.","code":"JF2"},{"date":"2026-04-07","day":7,"dayName":"mar.","code":"3"},{"date":"2026-04-08","day":8,"dayName":"mer.","code":"3"},{"date":"2026-04-09","day":9,"dayName":"jeu.","code":"3"},{"date":"2026-04-10","day":10,"dayName":"ven.","code":"3"},{"date":"2026-04-11","day":11,"dayName":"sam.","code":""},{"date":"2026-04-12","day":12,"dayName":"dim.","code":"R"},{"date":"2026-04-13","day":13,"dayName":"lun.","code":"R"},{"date":"2026-04-14","day":14,"dayName":"mar.","code":"1"},{"date":"2026-04-15","day":15,"dayName":"mer.","code":"1"},{"date":"2026-04-16","day":16,"dayName":"jeu.","code":"1"},{"date":"2026-04-17","day":17,"dayName":"ven.","code":"1"},{"date":"2026-04-18","day":18,"dayName":"sam.","code":"1"},{"date":"2026-04-19","day":19,"dayName":"dim.","code":"A"},{"date":"2026-04-20","day":20,"dayName":"lun.","code":"R"},{"date":"2026-04-21","day":21,"dayName":"mar.","code":"2"},{"date":"2026-04-22","day":22,"dayName":"mer.","code":"2"},{"date":"2026-04-23","day":23,"dayName":"jeu.","code":"2"},{"date":"2026-04-24","day":24,"dayName":"ven.","code":"R"},{"date":"2026-04-25","day":25,"dayName":"sam.","code":"R"},{"date":"2026-04-26","day":26,"dayName":"dim.","code":"R"},{"date":"2026-04-27","day":27,"dayName":"lun.","code":"4"},{"date":"2026-04-28","day":28,"dayName":"mar.","code":"4"},{"date":"2026-04-29","day":29,"dayName":"mer.","code":"4"},{"date":"2026-04-30","day":30,"dayName":"jeu.","code":"4"}],"MAI":[{"date":"2026-05-01","day":1,"dayName":"ven.","code":"JF3"},{"date":"2026-05-02","day":2,"dayName":"sam.","code":""},{"date":"2026-05-03","day":3,"dayName":"dim.","code":"R"},{"date":"2026-05-04","day":4,"dayName":"lun.","code":"2"},{"date":"2026-05-05","day":5,"dayName":"mar.","code":"2"},{"date":"2026-05-06","day":6,"dayName":"mer.","code":"2"},{"date":"2026-05-07","day":7,"dayName":"jeu.","code":"2"},{"date":"2026-05-08","day":8,"dayName":"ven.","code":"JF4"},{"date":"2026-05-09","day":9,"dayName":"sam.","code":"R"},{"date":"2026-05-10","day":10,"dayName":"dim.","code":"R"},{"date":"2026-05-11","day":11,"dayName":"lun.","code":"4"},{"date":"2026-05-12","day":12,"dayName":"mar.","code":"4"},{"date":"2026-05-13","day":13,"dayName":"mer.","code":"4"},{"date":"2026-05-14","day":14,"dayName":"jeu.","code":"JF5"},{"date":"2026-05-15","day":15,"dayName":"ven.","code":"4"},{"date":"2026-05-16","day":16,"dayName":"sam.","code":""},{"date":"2026-05-17","day":17,"dayName":"dim.","code":"R"},{"date":"2026-05-18","day":18,"dayName":"lun.","code":"F"},{"date":"2026-05-19","day":19,"dayName":"mar.","code":"F"},{"date":"2026-05-20","day":20,"dayName":"mer.","code":"F"},{"date":"2026-05-21","day":21,"dayName":"jeu.","code":"R"},{"date":"2026-05-22","day":22,"dayName":"ven.","code":"R"},{"date":"2026-05-23","day":23,"dayName":"sam.","code":"R"},{"date":"2026-05-24","day":24,"dayName":"dim.","code":"R"},{"date":"2026-05-25","day":25,"dayName":"lun.","code":"R"},{"date":"2026-05-26","day":26,"dayName":"mar.","code":"2"},{"date":"2026-05-27","day":27,"dayName":"mer.","code":"2"},{"date":"2026-05-28","day":28,"dayName":"jeu.","code":"2"},{"date":"2026-05-29","day":29,"dayName":"ven.","code":"2"},{"date":"2026-05-30","day":30,"dayName":"sam.","code":"R"},{"date":"2026-05-31","day":31,"dayName":"dim.","code":"R"}],"JUIN":[{"date":"2026-06-01","day":1,"dayName":"lun.","code":"4"},{"date":"2026-06-02","day":2,"dayName":"mar.","code":"4"},{"date":"2026-06-03","day":3,"dayName":"mer.","code":"4"},{"date":"2026-06-04","day":4,"dayName":"jeu.","code":"4"},{"date":"2026-06-05","day":5,"dayName":"ven.","code":"4"},{"date":"2026-06-06","day":6,"dayName":"sam.","code":""},{"date":"2026-06-07","day":7,"dayName":"dim.","code":"R"},{"date":"2026-06-08","day":8,"dayName":"lun.","code":"R"},{"date":"2026-06-09","day":9,"dayName":"mar.","code":"F"},{"date":"2026-06-10","day":10,"dayName":"mer.","code":"F"},{"date":"2026-06-11","day":11,"dayName":"jeu.","code":"F"},{"date":"2026-06-12","day":12,"dayName":"ven.","code":"2"},{"date":"2026-06-13","day":13,"dayName":"sam.","code":"R"},{"date":"2026-06-14","day":14,"dayName":"dim.","code":"R"},{"date":"2026-06-15","day":15,"dayName":"lun.","code":"3"},{"date":"2026-06-16","day":16,"dayName":"mar.","code":"3"},{"date":"2026-06-17","day":17,"dayName":"mer.","code":"3"},{"date":"2026-06-18","day":18,"dayName":"jeu.","code":"3"},{"date":"2026-06-19","day":19,"dayName":"ven.","code":"3"},{"date":"2026-06-20","day":20,"dayName":"sam.","code":""},{"date":"2026-06-21","day":21,"dayName":"dim.","code":"R"},{"date":"2026-06-22","day":22,"dayName":"lun.","code":"R"},{"date":"2026-06-23","day":23,"dayName":"mar.","code":"1"},{"date":"2026-06-24","day":24,"dayName":"mer.","code":"1"},{"date":"2026-06-25","day":25,"dayName":"jeu.","code":"1"},{"date":"2026-06-26","day":26,"dayName":"ven.","code":"1"},{"date":"2026-06-27","day":27,"dayName":"sam.","code":"1"},{"date":"2026-06-28","day":28,"dayName":"dim.","code":"A"},{"date":"2026-06-29","day":29,"dayName":"lun.","code":"2"},{"date":"2026-06-30","day":30,"dayName":"mar.","code":"2"}],"JUILLET":[{"date":"2026-07-01","day":1,"dayName":"mer.","code":"2"},{"date":"2026-07-02","day":2,"dayName":"jeu.","code":"2"},{"date":"2026-07-03","day":3,"dayName":"ven.","code":"2"},{"date":"2026-07-04","day":4,"dayName":"sam.","code":"R"},{"date":"2026-07-05","day":5,"dayName":"dim.","code":"R"},{"date":"2026-07-06","day":6,"dayName":"lun.","code":"4"},{"date":"2026-07-07","day":7,"dayName":"mar.","code":"4"},{"date":"2026-07-08","day":8,"dayName":"mer.","code":"4"},{"date":"2026-07-09","day":9,"dayName":"jeu.","code":"4"},{"date":"2026-07-10","day":10,"dayName":"ven.","code":"4"},{"date":"2026-07-11","day":11,"dayName":"sam.","code":""},{"date":"2026-07-12","day":12,"dayName":"dim.","code":"R"},{"date":"2026-07-13","day":13,"dayName":"lun.","code":"4"},{"date":"2026-07-14","day":14,"dayName":"mar.","code":"R"},{"date":"2026-07-15","day":15,"dayName":"mer.","code":"4"},{"date":"2026-07-16","day":16,"dayName":"jeu.","code":"4"},{"date":"2026-07-17","day":17,"dayName":"ven.","code":"4"},{"date":"2026-07-18","day":18,"dayName":"sam.","code":""},{"date":"2026-07-19","day":19,"dayName":"dim.","code":"R"},{"date":"2026-07-20","day":20,"dayName":"lun.","code":"3"},{"date":"2026-07-21","day":21,"dayName":"mar.","code":"3"},{"date":"2026-07-22","day":22,"dayName":"mer.","code":"3"},{"date":"2026-07-23","day":23,"dayName":"jeu.","code":"3"},{"date":"2026-07-24","day":24,"dayName":"ven.","code":"3"},{"date":"2026-07-25","day":25,"dayName":"sam.","code":""},{"date":"2026-07-26","day":26,"dayName":"dim.","code":"R"},{"date":"2026-07-27","day":27,"dayName":"lun.","code":"R"},{"date":"2026-07-28","day":28,"dayName":"mar.","code":"1"},{"date":"2026-07-29","day":29,"dayName":"mer.","code":"1"},{"date":"2026-07-30","day":30,"dayName":"jeu.","code":"1"},{"date":"2026-07-31","day":31,"dayName":"ven.","code":"1"}],"AOUT":[{"date":"2026-08-01","day":1,"dayName":"sam.","code":"1"},{"date":"2026-08-02","day":2,"dayName":"dim.","code":"A"},{"date":"2026-08-03","day":3,"dayName":"lun.","code":"4"},{"date":"2026-08-04","day":4,"dayName":"mar.","code":"4"},{"date":"2026-08-05","day":5,"dayName":"mer.","code":"4*"},{"date":"2026-08-06","day":6,"dayName":"jeu.","code":"4*"},{"date":"2026-08-07","day":7,"dayName":"ven.","code":"4*"},{"date":"2026-08-08","day":8,"dayName":"sam.","code":""},{"date":"2026-08-09","day":9,"dayName":"dim.","code":"R"},{"date":"2026-08-10","day":10,"dayName":"lun.","code":"R"},{"date":"2026-08-11","day":11,"dayName":"mar.","code":"1"},{"date":"2026-08-12","day":12,"dayName":"mer.","code":"1"},{"date":"2026-08-13","day":13,"dayName":"jeu.","code":"1"},{"date":"2026-08-14","day":14,"dayName":"ven.","code":"1"},{"date":"2026-08-15","day":15,"dayName":"sam.","code":"1"},{"date":"2026-08-16","day":16,"dayName":"dim.","code":"A"},{"date":"2026-08-17","day":17,"dayName":"lun.","code":"2"},{"date":"2026-08-18","day":18,"dayName":"mar.","code":"2"},{"date":"2026-08-19","day":19,"dayName":"mer.","code":"2"},{"date":"2026-08-20","day":20,"dayName":"jeu.","code":"2"},{"date":"2026-08-21","day":21,"dayName":"ven.","code":"2"},{"date":"2026-08-22","day":22,"dayName":"sam.","code":"R"},{"date":"2026-08-23","day":23,"dayName":"dim.","code":"R"},{"date":"2026-08-24","day":24,"dayName":"lun.","code":"4"},{"date":"2026-08-25","day":25,"dayName":"mar.","code":"4"},{"date":"2026-08-26","day":26,"dayName":"mer.","code":"4"},{"date":"2026-08-27","day":27,"dayName":"jeu.","code":"4"},{"date":"2026-08-28","day":28,"dayName":"ven.","code":"4"},{"date":"2026-08-29","day":29,"dayName":"sam.","code":""},{"date":"2026-08-30","day":30,"dayName":"dim.","code":"R"},{"date":"2026-08-31","day":31,"dayName":"lun.","code":"R"}],"SEPTEMBRE":[{"date":"2026-09-01","day":1,"dayName":"mar.","code":"1"},{"date":"2026-09-02","day":2,"dayName":"mer.","code":"1"},{"date":"2026-09-03","day":3,"dayName":"jeu.","code":"1"},{"date":"2026-09-04","day":4,"dayName":"ven.","code":"1"},{"date":"2026-09-05","day":5,"dayName":"sam.","code":"1"},{"date":"2026-09-06","day":6,"dayName":"dim.","code":"A"},{"date":"2026-09-07","day":7,"dayName":"lun.","code":"2"},{"date":"2026-09-08","day":8,"dayName":"mar.","code":"2"},{"date":"2026-09-09","day":9,"dayName":"mer.","code":"2"},{"date":"2026-09-10","day":10,"dayName":"jeu.","code":"2"},{"date":"2026-09-11","day":11,"dayName":"ven.","code":"2"},{"date":"2026-09-12","day":12,"dayName":"sam.","code":"R"},{"date":"2026-09-13","day":13,"dayName":"dim.","code":"R"},{"date":"2026-09-14","day":14,"dayName":"lun.","code":"4"},{"date":"2026-09-15","day":15,"dayName":"mar.","code":"4"},{"date":"2026-09-16","day":16,"dayName":"mer.","code":"4"},{"date":"2026-09-17","day":17,"dayName":"jeu.","code":"4"},{"date":"2026-09-18","day":18,"dayName":"ven.","code":"4"},{"date":"2026-09-19","day":19,"dayName":"sam.","code":""},{"date":"2026-09-20","day":20,"dayName":"dim.","code":"R"},{"date":"2026-09-21","day":21,"dayName":"lun.","code":"R"},{"date":"2026-09-22","day":22,"dayName":"mar.","code":"1"},{"date":"2026-09-23","day":23,"dayName":"mer.","code":"1"},{"date":"2026-09-24","day":24,"dayName":"jeu.","code":"1"},{"date":"2026-09-25","day":25,"dayName":"ven.","code":"1"},{"date":"2026-09-26","day":26,"dayName":"sam.","code":"1"},{"date":"2026-09-27","day":27,"dayName":"dim.","code":"A"},{"date":"2026-09-28","day":28,"dayName":"lun.","code":"R"},{"date":"2026-09-29","day":29,"dayName":"mar.","code":"R"},{"date":"2026-09-30","day":30,"dayName":"mer.","code":"R"},{"date":"2026-09-31","day":31,"dayName":"","code":""}],"OCTOBRE":[{"date":"2026-10-01","day":1,"dayName":"jeu.","code":"R"},{"date":"2026-10-02","day":2,"dayName":"ven.","code":"R"},{"date":"2026-10-03","day":3,"dayName":"sam.","code":"R"},{"date":"2026-10-04","day":4,"dayName":"dim.","code":"R"},{"date":"2026-10-05","day":5,"dayName":"lun.","code":"4"},{"date":"2026-10-06","day":6,"dayName":"mar.","code":"4"},{"date":"2026-10-07","day":7,"dayName":"mer.","code":"4"},{"date":"2026-10-08","day":8,"dayName":"jeu.","code":"4"},{"date":"2026-10-09","day":9,"dayName":"ven.","code":"4"},{"date":"2026-10-10","day":10,"dayName":"sam.","code":""},{"date":"2026-10-11","day":11,"dayName":"dim.","code":"R"},{"date":"2026-10-12","day":12,"dayName":"lun.","code":"3"},{"date":"2026-10-13","day":13,"dayName":"mar.","code":"3"},{"date":"2026-10-14","day":14,"dayName":"mer.","code":"3"},{"date":"2026-10-15","day":15,"dayName":"jeu.","code":"3"},{"date":"2026-10-16","day":16,"dayName":"ven.","code":"3"},{"date":"2026-10-17","day":17,"dayName":"sam.","code":""},{"date":"2026-10-18","day":18,"dayName":"dim.","code":"R"},{"date":"2026-10-19","day":19,"dayName":"lun.","code":"2"},{"date":"2026-10-20","day":20,"dayName":"mar.","code":"2"},{"date":"2026-10-21","day":21,"dayName":"mer.","code":"2"},{"date":"2026-10-22","day":22,"dayName":"jeu.","code":"2"},{"date":"2026-10-23","day":23,"dayName":"ven.","code":"2"},{"date":"2026-10-24","day":24,"dayName":"sam.","code":"R"},{"date":"2026-10-25","day":25,"dayName":"dim.","code":"R"},{"date":"2026-10-26","day":26,"dayName":"lun.","code":"4"},{"date":"2026-10-27","day":27,"dayName":"mar.","code":"4"},{"date":"2026-10-28","day":28,"dayName":"mer.","code":"4"},{"date":"2026-10-29","day":29,"dayName":"jeu.","code":"4"},{"date":"2026-10-30","day":30,"dayName":"ven.","code":"4"},{"date":"2026-10-31","day":31,"dayName":"sam.","code":""}],"NOVEMBRE":[{"date":"2026-11-01","day":1,"dayName":"dim.","code":"R"},{"date":"2026-11-02","day":2,"dayName":"lun.","code":"3"},{"date":"2026-11-03","day":3,"dayName":"mar.","code":"3"},{"date":"2026-11-04","day":4,"dayName":"mer.","code":""},{"date":"2026-11-05","day":5,"dayName":"jeu.","code":"R"},{"date":"2026-11-06","day":6,"dayName":"ven.","code":"R"},{"date":"2026-11-07","day":7,"dayName":"sam.","code":"R"},{"date":"2026-11-08","day":8,"dayName":"dim.","code":"R"},{"date":"2026-11-09","day":9,"dayName":"lun.","code":"R"},{"date":"2026-11-10","day":10,"dayName":"mar.","code":"1"},{"date":"2026-11-11","day":11,"dayName":"mer.","code":"1"},{"date":"2026-11-12","day":12,"dayName":"jeu.","code":"A"},{"date":"2026-11-13","day":13,"dayName":"ven.","code":"1"},{"date":"2026-11-14","day":14,"dayName":"sam.","code":"1"},{"date":"2026-11-15","day":15,"dayName":"dim.","code":"A"},{"date":"2026-11-16","day":16,"dayName":"lun.","code":"R"},{"date":"2026-11-17","day":17,"dayName":"mar.","code":"R"},{"date":"2026-11-18","day":18,"dayName":"mer.","code":"R"},{"date":"2026-11-19","day":19,"dayName":"jeu.","code":"R"},{"date":"2026-11-20","day":20,"dayName":"ven.","code":"R"},{"date":"2026-11-21","day":21,"dayName":"sam.","code":"R"},{"date":"2026-11-22","day":22,"dayName":"dim.","code":"R"},{"date":"2026-11-23","day":23,"dayName":"lun.","code":"2"},{"date":"2026-11-24","day":24,"dayName":"mar.","code":"2"},{"date":"2026-11-25","day":25,"dayName":"mer.","code":"2"},{"date":"2026-11-26","day":26,"dayName":"jeu.","code":"2"},{"date":"2026-11-27","day":27,"dayName":"ven.","code":"2"},{"date":"2026-11-28","day":28,"dayName":"sam.","code":"R"},{"date":"2026-11-29","day":29,"dayName":"dim.","code":"R"},{"date":"2026-11-30","day":30,"dayName":"lun.","code":"4"},{"date":"2026-11-31","day":31,"dayName":"","code":""}],"DECEMBRE":[{"date":"2026-12-01","day":1,"dayName":"mar.","code":"4"},{"date":"2026-12-02","day":2,"dayName":"mer.","code":"4"},{"date":"2026-12-03","day":3,"dayName":"jeu.","code":"4"},{"date":"2026-12-04","day":4,"dayName":"ven.","code":"4"},{"date":"2026-12-05","day":5,"dayName":"sam.","code":""},{"date":"2026-12-06","day":6,"dayName":"dim.","code":"R"},{"date":"2026-12-07","day":7,"dayName":"lun.","code":"3"},{"date":"2026-12-08","day":8,"dayName":"mar.","code":"3"},{"date":"2026-12-09","day":9,"dayName":"mer.","code":"3"},{"date":"2026-12-10","day":10,"dayName":"jeu.","code":"3"},{"date":"2026-12-11","day":11,"dayName":"ven.","code":"3"},{"date":"2026-12-12","day":12,"dayName":"sam.","code":""},{"date":"2026-12-13","day":13,"dayName":"dim.","code":"R"},{"date":"2026-12-14","day":14,"dayName":"lun.","code":"R"},{"date":"2026-12-15","day":15,"dayName":"mar.","code":"1"},{"date":"2026-12-16","day":16,"dayName":"mer.","code":"1"},{"date":"2026-12-17","day":17,"dayName":"jeu.","code":"1"},{"date":"2026-12-18","day":18,"dayName":"ven.","code":"1"},{"date":"2026-12-19","day":19,"dayName":"sam.","code":"1"},{"date":"2026-12-20","day":20,"dayName":"dim.","code":"A"},{"date":"2026-12-21","day":21,"dayName":"lun.","code":"R"},{"date":"2026-12-22","day":22,"dayName":"mar.","code":"R"},{"date":"2026-12-23","day":23,"dayName":"mer.","code":"R"},{"date":"2026-12-24","day":24,"dayName":"jeu.","code":"R"},{"date":"2026-12-25","day":25,"dayName":"ven.","code":"R"},{"date":"2026-12-26","day":26,"dayName":"sam.","code":"R"},{"date":"2026-12-27","day":27,"dayName":"dim.","code":"R"},{"date":"2026-12-28","day":28,"dayName":"lun.","code":"2"},{"date":"2026-12-29","day":29,"dayName":"mar.","code":"2"},{"date":"2026-12-30","day":30,"dayName":"mer.","code":"2"},{"date":"2026-12-31","day":31,"dayName":"jeu.","code":"2"}]},"TRONEL Salomé":{"JANVIER":[{"date":"2026-01-01","day":1,"dayName":"jeu.","code":"JF1"},{"date":"2026-01-02","day":2,"dayName":"ven.","code":"4"},{"date":"2026-01-03","day":3,"dayName":"sam.","code":""},{"date":"2026-01-04","day":4,"dayName":"dim.","code":"R"},{"date":"2026-01-05","day":5,"dayName":"lun.","code":"R"},{"date":"2026-01-06","day":6,"dayName":"mar.","code":"F"},{"date":"2026-01-07","day":7,"dayName":"mer.","code":"RTT"},{"date":"2026-01-08","day":8,"dayName":"jeu.","code":"RTT"},{"date":"2026-01-09","day":9,"dayName":"ven.","code":"R"},{"date":"2026-01-10","day":10,"dayName":"sam.","code":"R"},{"date":"2026-01-11","day":11,"dayName":"dim.","code":"R"},{"date":"2026-01-12","day":12,"dayName":"lun.","code":"3"},{"date":"2026-01-13","day":13,"dayName":"mar.","code":"3"},{"date":"2026-01-14","day":14,"dayName":"mer.","code":"3"},{"date":"2026-01-15","day":15,"dayName":"jeu.","code":"3"},{"date":"2026-01-16","day":16,"dayName":"ven.","code":"3"},{"date":"2026-01-17","day":17,"dayName":"sam.","code":""},{"date":"2026-01-18","day":18,"dayName":"dim.","code":"R"},{"date":"2026-01-19","day":19,"dayName":"lun.","code":"R"},{"date":"2026-01-20","day":20,"dayName":"mar.","code":"1"},{"date":"2026-01-21","day":21,"dayName":"mer.","code":"1"},{"date":"2026-01-22","day":22,"dayName":"jeu.","code":"1"},{"date":"2026-01-23","day":23,"dayName":"ven.","code":"1"},{"date":"2026-01-24","day":24,"dayName":"sam.","code":"1"},{"date":"2026-01-25","day":25,"dayName":"dim.","code":"A"},{"date":"2026-01-26","day":26,"dayName":"lun.","code":"2"},{"date":"2026-01-27","day":27,"dayName":"mar.","code":"2"},{"date":"2026-01-28","day":28,"dayName":"mer.","code":"2"},{"date":"2026-01-29","day":29,"dayName":"jeu.","code":"2"},{"date":"2026-01-30","day":30,"dayName":"ven.","code":"2"},{"date":"2026-01-31","day":31,"dayName":"sam.","code":"R"}],"FEVRIER":[{"date":"2026-02-01","day":1,"dayName":"dim.","code":"R"},{"date":"2026-02-02","day":2,"dayName":"lun.","code":"4"},{"date":"2026-02-03","day":3,"dayName":"mar.","code":"4"},{"date":"2026-02-04","day":4,"dayName":"mer.","code":"4"},{"date":"2026-02-05","day":5,"dayName":"jeu.","code":"4"},{"date":"2026-02-06","day":6,"dayName":"ven.","code":"4"},{"date":"2026-02-07","day":7,"dayName":"sam.","code":""},{"date":"2026-02-08","day":8,"dayName":"dim.","code":"R"},{"date":"2026-02-09","day":9,"dayName":"lun.","code":"R"},{"date":"2026-02-10","day":10,"dayName":"mar.","code":"F"},{"date":"2026-02-11","day":11,"dayName":"mer.","code":"F"},{"date":"2026-02-12","day":12,"dayName":"jeu.","code":"RTT"},{"date":"2026-02-13","day":13,"dayName":"ven.","code":"R"},{"date":"2026-02-14","day":14,"dayName":"sam.","code":"R"},{"date":"2026-02-15","day":15,"dayName":"dim.","code":"R"},{"date":"2026-02-16","day":16,"dayName":"lun.","code":"3"},{"date":"2026-02-17","day":17,"dayName":"mar.","code":"3"},{"date":"2026-02-18","day":18,"dayName":"mer.","code":"3"},{"date":"2026-02-19","day":19,"dayName":"jeu.","code":"3"},{"date":"2026-02-20","day":20,"dayName":"ven.","code":"3"},{"date":"2026-02-21","day":21,"dayName":"sam.","code":""},{"date":"2026-02-22","day":22,"dayName":"dim.","code":"R"},{"date":"2026-02-23","day":23,"dayName":"lun.","code":"R"},{"date":"2026-02-24","day":24,"dayName":"mar.","code":"1"},{"date":"2026-02-25","day":25,"dayName":"mer.","code":"1"},{"date":"2026-02-26","day":26,"dayName":"jeu.","code":"1"},{"date":"2026-02-27","day":27,"dayName":"ven.","code":"1"},{"date":"2026-02-28","day":28,"dayName":"sam.","code":"1"}],"MARS":[{"date":"2026-03-01","day":1,"dayName":"dim.","code":"A"},{"date":"2026-03-02","day":2,"dayName":"lun.","code":"2"},{"date":"2026-03-03","day":3,"dayName":"mar.","code":"2"},{"date":"2026-03-04","day":4,"dayName":"mer.","code":"2"},{"date":"2026-03-05","day":5,"dayName":"jeu.","code":"2"},{"date":"2026-03-06","day":6,"dayName":"ven.","code":"2"},{"date":"2026-03-07","day":7,"dayName":"sam.","code":"R"},{"date":"2026-03-08","day":8,"dayName":"dim.","code":"R"},{"date":"2026-03-09","day":9,"dayName":"lun.","code":"4"},{"date":"2026-03-10","day":10,"dayName":"mar.","code":"4"},{"date":"2026-03-11","day":11,"dayName":"mer.","code":"4"},{"date":"2026-03-12","day":12,"dayName":"jeu.","code":"4"},{"date":"2026-03-13","day":13,"dayName":"ven.","code":"4"},{"date":"2026-03-14","day":14,"dayName":"sam.","code":""},{"date":"2026-03-15","day":15,"dayName":"dim.","code":"R"},{"date":"2026-03-16","day":16,"dayName":"lun.","code":"R"},{"date":"2026-03-17","day":17,"dayName":"mar.","code":"F"},{"date":"2026-03-18","day":18,"dayName":"mer.","code":"RCN"},{"date":"2026-03-19","day":19,"dayName":"jeu.","code":"RCN"},{"date":"2026-03-20","day":20,"dayName":"ven.","code":"R"},{"date":"2026-03-21","day":21,"dayName":"sam.","code":"R"},{"date":"2026-03-22","day":22,"dayName":"dim.","code":"R"},{"date":"2026-03-23","day":23,"dayName":"lun.","code":"3"},{"date":"2026-03-24","day":24,"dayName":"mar.","code":"3"},{"date":"2026-03-25","day":25,"dayName":"mer.","code":"3"},{"date":"2026-03-26","day":26,"dayName":"jeu.","code":"3"},{"date":"2026-03-27","day":27,"dayName":"ven.","code":"3"},{"date":"2026-03-28","day":28,"dayName":"sam.","code":""},{"date":"2026-03-29","day":29,"dayName":"dim.","code":"R"},{"date":"2026-03-30","day":30,"dayName":"lun.","code":"R"},{"date":"2026-03-31","day":31,"dayName":"mar.","code":"1"}],"AVRIL":[{"date":"2026-04-01","day":1,"dayName":"mer.","code":"1"},{"date":"2026-04-02","day":2,"dayName":"jeu.","code":"1"},{"date":"2026-04-03","day":3,"dayName":"ven.","code":"1"},{"date":"2026-04-04","day":4,"dayName":"sam.","code":"1"},{"date":"2026-04-05","day":5,"dayName":"dim.","code":"A"},{"date":"2026-04-06","day":6,"dayName":"lun.","code":"A"},{"date":"2026-04-07","day":7,"dayName":"mar.","code":"R"},{"date":"2026-04-08","day":8,"dayName":"mer.","code":"R"},{"date":"2026-04-09","day":9,"dayName":"jeu.","code":"F"},{"date":"2026-04-10","day":10,"dayName":"ven.","code":"F"},{"date":"2026-04-11","day":11,"dayName":"sam.","code":"R"},{"date":"2026-04-12","day":12,"dayName":"dim.","code":"R"},{"date":"2026-04-13","day":13,"dayName":"lun.","code":"2"},{"date":"2026-04-14","day":14,"dayName":"mar.","code":"2"},{"date":"2026-04-15","day":15,"dayName":"mer.","code":"2"},{"date":"2026-04-16","day":16,"dayName":"jeu.","code":"2"},{"date":"2026-04-17","day":17,"dayName":"ven.","code":"2"},{"date":"2026-04-18","day":18,"dayName":"sam.","code":"R"},{"date":"2026-04-19","day":19,"dayName":"dim.","code":"R"},{"date":"2026-04-20","day":20,"dayName":"lun.","code":"2"},{"date":"2026-04-21","day":21,"dayName":"mar.","code":"F"},{"date":"2026-04-22","day":22,"dayName":"mer.","code":"RCN"},{"date":"2026-04-23","day":23,"dayName":"jeu.","code":"F"},{"date":"2026-04-24","day":24,"dayName":"ven.","code":"2"},{"date":"2026-04-25","day":25,"dayName":"sam.","code":"R"},{"date":"2026-04-26","day":26,"dayName":"dim.","code":"R"},{"date":"2026-04-27","day":27,"dayName":"lun.","code":"2"},{"date":"2026-04-28","day":28,"dayName":"mar.","code":"2"},{"date":"2026-04-29","day":29,"dayName":"mer.","code":"2"},{"date":"2026-04-30","day":30,"dayName":"jeu.","code":"2"}],"MAI":[{"date":"2026-05-01","day":1,"dayName":"ven.","code":"JF2"},{"date":"2026-05-02","day":2,"dayName":"sam.","code":"R"},{"date":"2026-05-03","day":3,"dayName":"dim.","code":"R"},{"date":"2026-05-04","day":4,"dayName":"lun.","code":"R"},{"date":"2026-05-05","day":5,"dayName":"mar.","code":"C"},{"date":"2026-05-06","day":6,"dayName":"mer.","code":"F"},{"date":"2026-05-07","day":7,"dayName":"jeu.","code":"R"},{"date":"2026-05-08","day":8,"dayName":"ven.","code":"JF3"},{"date":"2026-05-09","day":9,"dayName":"sam.","code":"R"},{"date":"2026-05-10","day":10,"dayName":"dim.","code":"R"},{"date":"2026-05-11","day":11,"dayName":"lun.","code":"3"},{"date":"2026-05-12","day":12,"dayName":"mar.","code":"3"},{"date":"2026-05-13","day":13,"dayName":"mer.","code":"3"},{"date":"2026-05-14","day":14,"dayName":"jeu.","code":"JF3"},{"date":"2026-05-15","day":15,"dayName":"ven.","code":"3"},{"date":"2026-05-16","day":16,"dayName":"sam.","code":""},{"date":"2026-05-17","day":17,"dayName":"dim.","code":"R"},{"date":"2026-05-18","day":18,"dayName":"lun.","code":"R"},{"date":"2026-05-19","day":19,"dayName":"mar.","code":"1"},{"date":"2026-05-20","day":20,"dayName":"mer.","code":"1"},{"date":"2026-05-21","day":21,"dayName":"jeu.","code":"1"},{"date":"2026-05-22","day":22,"dayName":"ven.","code":"1"},{"date":"2026-05-23","day":23,"dayName":"sam.","code":"1"},{"date":"2026-05-24","day":24,"dayName":"dim.","code":"A"},{"date":"2026-05-25","day":25,"dayName":"lun.","code":"A"},{"date":"2026-05-26","day":26,"dayName":"mar.","code":"R"},{"date":"2026-05-27","day":27,"dayName":"mer.","code":"RCN"},{"date":"2026-05-28","day":28,"dayName":"jeu.","code":"RCN"},{"date":"2026-05-29","day":29,"dayName":"ven.","code":"RCN"},{"date":"2026-05-30","day":30,"dayName":"sam.","code":"R"},{"date":"2026-05-31","day":31,"dayName":"dim.","code":"R"}],"JUIN":[{"date":"2026-06-01","day":1,"dayName":"lun.","code":"2"},{"date":"2026-06-02","day":2,"dayName":"mar.","code":"2"},{"date":"2026-06-03","day":3,"dayName":"mer.","code":"2"},{"date":"2026-06-04","day":4,"dayName":"jeu.","code":"2"},{"date":"2026-06-05","day":5,"dayName":"ven.","code":"2"},{"date":"2026-06-06","day":6,"dayName":"sam.","code":"R"},{"date":"2026-06-07","day":7,"dayName":"dim.","code":"R"},{"date":"2026-06-08","day":8,"dayName":"lun.","code":"4"},{"date":"2026-06-09","day":9,"dayName":"mar.","code":"4"},{"date":"2026-06-10","day":10,"dayName":"mer.","code":"4"},{"date":"2026-06-11","day":11,"dayName":"jeu.","code":"4"},{"date":"2026-06-12","day":12,"dayName":"ven.","code":"4"},{"date":"2026-06-13","day":13,"dayName":"sam.","code":""},{"date":"2026-06-14","day":14,"dayName":"dim.","code":"R"},{"date":"2026-06-15","day":15,"dayName":"lun.","code":"R"},{"date":"2026-06-16","day":16,"dayName":"mar.","code":"F"},{"date":"2026-06-17","day":17,"dayName":"mer.","code":"F"},{"date":"2026-06-18","day":18,"dayName":"jeu.","code":"C"},{"date":"2026-06-19","day":19,"dayName":"ven.","code":"C"},{"date":"2026-06-20","day":20,"dayName":"sam.","code":"R"},{"date":"2026-06-21","day":21,"dayName":"dim.","code":"R"},{"date":"2026-06-22","day":22,"dayName":"lun.","code":"3"},{"date":"2026-06-23","day":23,"dayName":"mar.","code":"3"},{"date":"2026-06-24","day":24,"dayName":"mer.","code":"3"},{"date":"2026-06-25","day":25,"dayName":"jeu.","code":"3"},{"date":"2026-06-26","day":26,"dayName":"ven.","code":"3"},{"date":"2026-06-27","day":27,"dayName":"sam.","code":""},{"date":"2026-06-28","day":28,"dayName":"dim.","code":"R"},{"date":"2026-06-29","day":29,"dayName":"lun.","code":"C"},{"date":"2026-06-30","day":30,"dayName":"mar.","code":"C"}],"JUILLET":[{"date":"2026-07-01","day":1,"dayName":"mer.","code":"C"},{"date":"2026-07-02","day":2,"dayName":"jeu.","code":"C"},{"date":"2026-07-03","day":3,"dayName":"ven.","code":"C"},{"date":"2026-07-04","day":4,"dayName":"sam.","code":"R"},{"date":"2026-07-05","day":5,"dayName":"dim.","code":"R"},{"date":"2026-07-06","day":6,"dayName":"lun.","code":"C"},{"date":"2026-07-07","day":7,"dayName":"mar.","code":"C"},{"date":"2026-07-08","day":8,"dayName":"mer.","code":"C"},{"date":"2026-07-09","day":9,"dayName":"jeu.","code":"C"},{"date":"2026-07-10","day":10,"dayName":"ven.","code":"C"},{"date":"2026-07-11","day":11,"dayName":"sam.","code":"R"},{"date":"2026-07-12","day":12,"dayName":"dim.","code":"R"},{"date":"2026-07-13","day":13,"dayName":"lun.","code":"RCN"},{"date":"2026-07-14","day":14,"dayName":"mar.","code":"1"},{"date":"2026-07-15","day":15,"dayName":"mer.","code":"A"},{"date":"2026-07-16","day":16,"dayName":"jeu.","code":"1"},{"date":"2026-07-17","day":17,"dayName":"ven.","code":"1"},{"date":"2026-07-18","day":18,"dayName":"sam.","code":"1"},{"date":"2026-07-19","day":19,"dayName":"dim.","code":"A"},{"date":"2026-07-20","day":20,"dayName":"lun.","code":"2"},{"date":"2026-07-21","day":21,"dayName":"mar.","code":"2"},{"date":"2026-07-22","day":22,"dayName":"mer.","code":"2"},{"date":"2026-07-23","day":23,"dayName":"jeu.","code":"2"},{"date":"2026-07-24","day":24,"dayName":"ven.","code":"2"},{"date":"2026-07-25","day":25,"dayName":"sam.","code":"R"},{"date":"2026-07-26","day":26,"dayName":"dim.","code":"R"},{"date":"2026-07-27","day":27,"dayName":"lun.","code":"4"},{"date":"2026-07-28","day":28,"dayName":"mar.","code":"4"},{"date":"2026-07-29","day":29,"dayName":"mer.","code":"4"},{"date":"2026-07-30","day":30,"dayName":"jeu.","code":"4"},{"date":"2026-07-31","day":31,"dayName":"ven.","code":"4"}],"AOUT":[{"date":"2026-08-01","day":1,"dayName":"sam.","code":""},{"date":"2026-08-02","day":2,"dayName":"dim.","code":"R"},{"date":"2026-08-03","day":3,"dayName":"lun.","code":"2"},{"date":"2026-08-04","day":4,"dayName":"mar.","code":"2"},{"date":"2026-08-05","day":5,"dayName":"mer.","code":"2"},{"date":"2026-08-06","day":6,"dayName":"jeu.","code":"2"},{"date":"2026-08-07","day":7,"dayName":"ven.","code":"2"},{"date":"2026-08-08","day":8,"dayName":"sam.","code":"R"},{"date":"2026-08-09","day":9,"dayName":"dim.","code":"R"},{"date":"2026-08-10","day":10,"dayName":"lun.","code":"4"},{"date":"2026-08-11","day":11,"dayName":"mar.","code":"4"},{"date":"2026-08-12","day":12,"dayName":"mer.","code":"4"},{"date":"2026-08-13","day":13,"dayName":"jeu.","code":"4"},{"date":"2026-08-14","day":14,"dayName":"ven.","code":"4"},{"date":"2026-08-15","day":15,"dayName":"sam.","code":""},{"date":"2026-08-16","day":16,"dayName":"dim.","code":"R"},{"date":"2026-08-17","day":17,"dayName":"lun.","code":"R"},{"date":"2026-08-18","day":18,"dayName":"mar.","code":"F"},{"date":"2026-08-19","day":19,"dayName":"mer.","code":"F"},{"date":"2026-08-20","day":20,"dayName":"jeu.","code":"F"},{"date":"2026-08-21","day":21,"dayName":"ven.","code":"F"},{"date":"2026-08-22","day":22,"dayName":"sam.","code":"R"},{"date":"2026-08-23","day":23,"dayName":"dim.","code":"R"},{"date":"2026-08-24","day":24,"dayName":"lun.","code":"3"},{"date":"2026-08-25","day":25,"dayName":"mar.","code":"3"},{"date":"2026-08-26","day":26,"dayName":"mer.","code":"3"},{"date":"2026-08-27","day":27,"dayName":"jeu.","code":"3"},{"date":"2026-08-28","day":28,"dayName":"ven.","code":"3"},{"date":"2026-08-29","day":29,"dayName":"sam.","code":""},{"date":"2026-08-30","day":30,"dayName":"dim.","code":"R"},{"date":"2026-08-31","day":31,"dayName":"lun.","code":"C"}],"SEPTEMBRE":[{"date":"2026-09-01","day":1,"dayName":"mar.","code":"C"},{"date":"2026-09-02","day":2,"dayName":"mer.","code":"C"},{"date":"2026-09-03","day":3,"dayName":"jeu.","code":"C"},{"date":"2026-09-04","day":4,"dayName":"ven.","code":"C"},{"date":"2026-09-05","day":5,"dayName":"sam.","code":"R"},{"date":"2026-09-06","day":6,"dayName":"dim.","code":"R"},{"date":"2026-09-07","day":7,"dayName":"lun.","code":"C"},{"date":"2026-09-08","day":8,"dayName":"mar.","code":"C"},{"date":"2026-09-09","day":9,"dayName":"mer.","code":"C"},{"date":"2026-09-10","day":10,"dayName":"jeu.","code":"C"},{"date":"2026-09-11","day":11,"dayName":"ven.","code":"C"},{"date":"2026-09-12","day":12,"dayName":"sam.","code":"R"},{"date":"2026-09-13","day":13,"dayName":"dim.","code":"R"},{"date":"2026-09-14","day":14,"dayName":"lun.","code":"C"},{"date":"2026-09-15","day":15,"dayName":"mar.","code":"C"},{"date":"2026-09-16","day":16,"dayName":"mer.","code":"C"},{"date":"2026-09-17","day":17,"dayName":"jeu.","code":"C"},{"date":"2026-09-18","day":18,"dayName":"ven.","code":"C"},{"date":"2026-09-19","day":19,"dayName":"sam.","code":"R"},{"date":"2026-09-20","day":20,"dayName":"dim.","code":"R"},{"date":"2026-09-21","day":21,"dayName":"lun.","code":"3"},{"date":"2026-09-22","day":22,"dayName":"mar.","code":"3"},{"date":"2026-09-23","day":23,"dayName":"mer.","code":"3"},{"date":"2026-09-24","day":24,"dayName":"jeu.","code":"3"},{"date":"2026-09-25","day":25,"dayName":"ven.","code":"3"},{"date":"2026-09-26","day":26,"dayName":"sam.","code":""},{"date":"2026-09-27","day":27,"dayName":"dim.","code":"R"},{"date":"2026-09-28","day":28,"dayName":"lun.","code":"R"},{"date":"2026-09-29","day":29,"dayName":"mar.","code":"1"},{"date":"2026-09-30","day":30,"dayName":"mer.","code":"1"},{"date":"2026-09-31","day":31,"dayName":"","code":""}],"OCTOBRE":[{"date":"2026-10-01","day":1,"dayName":"jeu.","code":"1"},{"date":"2026-10-02","day":2,"dayName":"ven.","code":"1"},{"date":"2026-10-03","day":3,"dayName":"sam.","code":"1"},{"date":"2026-10-04","day":4,"dayName":"dim.","code":"A"},{"date":"2026-10-05","day":5,"dayName":"lun.","code":"R"},{"date":"2026-10-06","day":6,"dayName":"mar.","code":"R"},{"date":"2026-10-07","day":7,"dayName":"mer.","code":"F"},{"date":"2026-10-08","day":8,"dayName":"jeu.","code":"F"},{"date":"2026-10-09","day":9,"dayName":"ven.","code":"R"},{"date":"2026-10-10","day":10,"dayName":"sam.","code":"R"},{"date":"2026-10-11","day":11,"dayName":"dim.","code":"R"},{"date":"2026-10-12","day":12,"dayName":"lun.","code":"2"},{"date":"2026-10-13","day":13,"dayName":"mar.","code":"2"},{"date":"2026-10-14","day":14,"dayName":"mer.","code":"2"},{"date":"2026-10-15","day":15,"dayName":"jeu.","code":"2"},{"date":"2026-10-16","day":16,"dayName":"ven.","code":"2"},{"date":"2026-10-17","day":17,"dayName":"sam.","code":"R"},{"date":"2026-10-18","day":18,"dayName":"dim.","code":"R"},{"date":"2026-10-19","day":19,"dayName":"lun.","code":"4"},{"date":"2026-10-20","day":20,"dayName":"mar.","code":"4"},{"date":"2026-10-21","day":21,"dayName":"mer.","code":"4"},{"date":"2026-10-22","day":22,"dayName":"jeu.","code":"4"},{"date":"2026-10-23","day":23,"dayName":"ven.","code":"4"},{"date":"2026-10-24","day":24,"dayName":"sam.","code":""},{"date":"2026-10-25","day":25,"dayName":"dim.","code":"R"},{"date":"2026-10-26","day":26,"dayName":"lun.","code":"3"},{"date":"2026-10-27","day":27,"dayName":"mar.","code":"3"},{"date":"2026-10-28","day":28,"dayName":"mer.","code":"3"},{"date":"2026-10-29","day":29,"dayName":"jeu.","code":"3"},{"date":"2026-10-30","day":30,"dayName":"ven.","code":"3"},{"date":"2026-10-31","day":31,"dayName":"sam.","code":""}],"NOVEMBRE":[{"date":"2026-11-01","day":1,"dayName":"dim.","code":"R"},{"date":"2026-11-02","day":2,"dayName":"lun.","code":"R"},{"date":"2026-11-03","day":3,"dayName":"mar.","code":"1"},{"date":"2026-11-04","day":4,"dayName":"mer.","code":"1"},{"date":"2026-11-05","day":5,"dayName":"jeu.","code":"1"},{"date":"2026-11-06","day":6,"dayName":"ven.","code":"1"},{"date":"2026-11-07","day":7,"dayName":"sam.","code":"1"},{"date":"2026-11-08","day":8,"dayName":"dim.","code":"A"},{"date":"2026-11-09","day":9,"dayName":"lun.","code":"R"},{"date":"2026-11-10","day":10,"dayName":"mar.","code":"R"},{"date":"2026-11-11","day":11,"dayName":"mer.","code":"R"},{"date":"2026-11-12","day":12,"dayName":"jeu.","code":"F"},{"date":"2026-11-13","day":13,"dayName":"ven.","code":"R"},{"date":"2026-11-14","day":14,"dayName":"sam.","code":"R"},{"date":"2026-11-15","day":15,"dayName":"dim.","code":"R"},{"date":"2026-11-16","day":16,"dayName":"lun.","code":"2"},{"date":"2026-11-17","day":17,"dayName":"mar.","code":"2"},{"date":"2026-11-18","day":18,"dayName":"mer.","code":"2"},{"date":"2026-11-19","day":19,"dayName":"jeu.","code":"2"},{"date":"2026-11-20","day":20,"dayName":"ven.","code":"2"},{"date":"2026-11-21","day":21,"dayName":"sam.","code":"R"},{"date":"2026-11-22","day":22,"dayName":"dim.","code":"R"},{"date":"2026-11-23","day":23,"dayName":"lun.","code":"4"},{"date":"2026-11-24","day":24,"dayName":"mar.","code":"4"},{"date":"2026-11-25","day":25,"dayName":"mer.","code":"4"},{"date":"2026-11-26","day":26,"dayName":"jeu.","code":"4"},{"date":"2026-11-27","day":27,"dayName":"ven.","code":"4"},{"date":"2026-11-28","day":28,"dayName":"sam.","code":""},{"date":"2026-11-29","day":29,"dayName":"dim.","code":"R"},{"date":"2026-11-30","day":30,"dayName":"lun.","code":"3"},{"date":"2026-11-31","day":31,"dayName":"","code":""}],"DECEMBRE":[{"date":"2026-12-01","day":1,"dayName":"mar.","code":"3"},{"date":"2026-12-02","day":2,"dayName":"mer.","code":"3"},{"date":"2026-12-03","day":3,"dayName":"jeu.","code":"3"},{"date":"2026-12-04","day":4,"dayName":"ven.","code":"3"},{"date":"2026-12-05","day":5,"dayName":"sam.","code":""},{"date":"2026-12-06","day":6,"dayName":"dim.","code":"R"},{"date":"2026-12-07","day":7,"dayName":"lun.","code":"R"},{"date":"2026-12-08","day":8,"dayName":"mar.","code":"1"},{"date":"2026-12-09","day":9,"dayName":"mer.","code":"1"},{"date":"2026-12-10","day":10,"dayName":"jeu.","code":"1"},{"date":"2026-12-11","day":11,"dayName":"ven.","code":"1"},{"date":"2026-12-12","day":12,"dayName":"sam.","code":"1"},{"date":"2026-12-13","day":13,"dayName":"dim.","code":"A"},{"date":"2026-12-14","day":14,"dayName":"lun.","code":"R"},{"date":"2026-12-15","day":15,"dayName":"mar.","code":"R"},{"date":"2026-12-16","day":16,"dayName":"mer.","code":"R"},{"date":"2026-12-17","day":17,"dayName":"jeu.","code":"R"},{"date":"2026-12-18","day":18,"dayName":"ven.","code":"R"},{"date":"2026-12-19","day":19,"dayName":"sam.","code":"R"},{"date":"2026-12-20","day":20,"dayName":"dim.","code":"R"},{"date":"2026-12-21","day":21,"dayName":"lun.","code":"2"},{"date":"2026-12-22","day":22,"dayName":"mar.","code":"2"},{"date":"2026-12-23","day":23,"dayName":"mer.","code":"2"},{"date":"2026-12-24","day":24,"dayName":"jeu.","code":"2"},{"date":"2026-12-25","day":25,"dayName":"ven.","code":"R"},{"date":"2026-12-26","day":26,"dayName":"sam.","code":"R"},{"date":"2026-12-27","day":27,"dayName":"dim.","code":"R"},{"date":"2026-12-28","day":28,"dayName":"lun.","code":"4"},{"date":"2026-12-29","day":29,"dayName":"mar.","code":"4"},{"date":"2026-12-30","day":30,"dayName":"mer.","code":"4"},{"date":"2026-12-31","day":31,"dayName":"jeu.","code":"4"}]},"LOBE Gauthier":{"JANVIER":[{"date":"2026-01-01","day":1,"dayName":"jeu.","code":""},{"date":"2026-01-02","day":2,"dayName":"ven.","code":""},{"date":"2026-01-03","day":3,"dayName":"sam.","code":"R"},{"date":"2026-01-04","day":4,"dayName":"dim.","code":"R"},{"date":"2026-01-05","day":5,"dayName":"lun.","code":"F"},{"date":"2026-01-06","day":6,"dayName":"mar.","code":"F"},{"date":"2026-01-07","day":7,"dayName":"mer.","code":"F"},{"date":"2026-01-08","day":8,"dayName":"jeu.","code":"F"},{"date":"2026-01-09","day":9,"dayName":"ven.","code":"F"},{"date":"2026-01-10","day":10,"dayName":"sam.","code":"R"},{"date":"2026-01-11","day":11,"dayName":"dim.","code":"R"},{"date":"2026-01-12","day":12,"dayName":"lun.","code":"R"},{"date":"2026-01-13","day":13,"dayName":"mar.","code":"1"},{"date":"2026-01-14","day":14,"dayName":"mer.","code":"1"},{"date":"2026-01-15","day":15,"dayName":"jeu.","code":"1"},{"date":"2026-01-16","day":16,"dayName":"ven.","code":"1"},{"date":"2026-01-17","day":17,"dayName":"sam.","code":"1"},{"date":"2026-01-18","day":18,"dayName":"dim.","code":"R"},{"date":"2026-01-19","day":19,"dayName":"lun.","code":"2"},{"date":"2026-01-20","day":20,"dayName":"mar.","code":"2"},{"date":"2026-01-21","day":21,"dayName":"mer.","code":"2"},{"date":"2026-01-22","day":22,"dayName":"jeu.","code":"2"},{"date":"2026-01-23","day":23,"dayName":"ven.","code":"2"},{"date":"2026-01-24","day":24,"dayName":"sam.","code":"R"},{"date":"2026-01-25","day":25,"dayName":"dim.","code":"R"},{"date":"2026-01-26","day":26,"dayName":"lun.","code":"4"},{"date":"2026-01-27","day":27,"dayName":"mar.","code":"4"},{"date":"2026-01-28","day":28,"dayName":"mer.","code":"4"},{"date":"2026-01-29","day":29,"dayName":"jeu.","code":"4"},{"date":"2026-01-30","day":30,"dayName":"ven.","code":"4"},{"date":"2026-01-31","day":31,"dayName":"sam.","code":""}],"FEVRIER":[{"date":"2026-02-01","day":1,"dayName":"dim.","code":"R"},{"date":"2026-02-02","day":2,"dayName":"lun.","code":"2"},{"date":"2026-02-03","day":3,"dayName":"mar.","code":"2"},{"date":"2026-02-04","day":4,"dayName":"mer.","code":"2"},{"date":"2026-02-05","day":5,"dayName":"jeu.","code":"2"},{"date":"2026-02-06","day":6,"dayName":"ven.","code":"2"},{"date":"2026-02-07","day":7,"dayName":"sam.","code":"R"},{"date":"2026-02-08","day":8,"dayName":"dim.","code":"R"},{"date":"2026-02-09","day":9,"dayName":"lun.","code":"3"},{"date":"2026-02-10","day":10,"dayName":"mar.","code":"3"},{"date":"2026-02-11","day":11,"dayName":"mer.","code":"3"},{"date":"2026-02-12","day":12,"dayName":"jeu.","code":"3"},{"date":"2026-02-13","day":13,"dayName":"ven.","code":"3"},{"date":"2026-02-14","day":14,"dayName":"sam.","code":"R"},{"date":"2026-02-15","day":15,"dayName":"dim.","code":"R"},{"date":"2026-02-16","day":16,"dayName":"lun.","code":"R"},{"date":"2026-02-17","day":17,"dayName":"mar.","code":"1"},{"date":"2026-02-18","day":18,"dayName":"mer.","code":"1"},{"date":"2026-02-19","day":19,"dayName":"jeu.","code":"1"},{"date":"2026-02-20","day":20,"dayName":"ven.","code":"1"},{"date":"2026-02-21","day":21,"dayName":"sam.","code":"1"},{"date":"2026-02-22","day":22,"dayName":"dim.","code":"R"},{"date":"2026-02-23","day":23,"dayName":"lun.","code":"2"},{"date":"2026-02-24","day":24,"dayName":"mar.","code":"2"},{"date":"2026-02-25","day":25,"dayName":"mer.","code":"2"},{"date":"2026-02-26","day":26,"dayName":"jeu.","code":"2"},{"date":"2026-02-27","day":27,"dayName":"ven.","code":"2"},{"date":"2026-02-28","day":28,"dayName":"sam.","code":"R"}],"MARS":[{"date":"2026-03-01","day":1,"dayName":"dim.","code":"R"},{"date":"2026-03-02","day":2,"dayName":"lun.","code":"3"},{"date":"2026-03-03","day":3,"dayName":"mar.","code":"3"},{"date":"2026-03-04","day":4,"dayName":"mer.","code":"3"},{"date":"2026-03-05","day":5,"dayName":"jeu.","code":""},{"date":"2026-03-06","day":6,"dayName":"ven.","code":"F"},{"date":"2026-03-07","day":7,"dayName":"sam.","code":"R"},{"date":"2026-03-08","day":8,"dayName":"dim.","code":"R"},{"date":"2026-03-09","day":9,"dayName":"lun.","code":"R"},{"date":"2026-03-10","day":10,"dayName":"mar.","code":"1"},{"date":"2026-03-11","day":11,"dayName":"mer.","code":"1"},{"date":"2026-03-12","day":12,"dayName":"jeu.","code":"1"},{"date":"2026-03-13","day":13,"dayName":"ven.","code":"1"},{"date":"2026-03-14","day":14,"dayName":"sam.","code":"1"},{"date":"2026-03-15","day":15,"dayName":"dim.","code":"A"},{"date":"2026-03-16","day":16,"dayName":"lun.","code":"2"},{"date":"2026-03-17","day":17,"dayName":"mar.","code":"2"},{"date":"2026-03-18","day":18,"dayName":"mer.","code":"2"},{"date":"2026-03-19","day":19,"dayName":"jeu.","code":"2"},{"date":"2026-03-20","day":20,"dayName":"ven.","code":"2"},{"date":"2026-03-21","day":21,"dayName":"sam.","code":"R"},{"date":"2026-03-22","day":22,"dayName":"dim.","code":"R"},{"date":"2026-03-23","day":23,"dayName":"lun.","code":"4"},{"date":"2026-03-24","day":24,"dayName":"mar.","code":"4"},{"date":"2026-03-25","day":25,"dayName":"mer.","code":"4"},{"date":"2026-03-26","day":26,"dayName":"jeu.","code":"4"},{"date":"2026-03-27","day":27,"dayName":"ven.","code":"4"},{"date":"2026-03-28","day":28,"dayName":"sam.","code":""},{"date":"2026-03-29","day":29,"dayName":"dim.","code":"R"},{"date":"2026-03-30","day":30,"dayName":"lun.","code":"2"},{"date":"2026-03-31","day":31,"dayName":"mar.","code":"RTT"}],"AVRIL":[{"date":"2026-04-01","day":1,"dayName":"mer.","code":"F"},{"date":"2026-04-02","day":2,"dayName":"jeu.","code":"R"},{"date":"2026-04-03","day":3,"dayName":"ven.","code":"R"},{"date":"2026-04-04","day":4,"dayName":"sam.","code":"R"},{"date":"2026-04-05","day":5,"dayName":"dim.","code":"R"},{"date":"2026-04-06","day":6,"dayName":"lun.","code":"JF1"},{"date":"2026-04-07","day":7,"dayName":"mar.","code":"2"},{"date":"2026-04-08","day":8,"dayName":"mer.","code":"2"},{"date":"2026-04-09","day":9,"dayName":"jeu.","code":"2"},{"date":"2026-04-10","day":10,"dayName":"ven.","code":"2"},{"date":"2026-04-11","day":11,"dayName":"sam.","code":"R"},{"date":"2026-04-12","day":12,"dayName":"dim.","code":"R"},{"date":"2026-04-13","day":13,"dayName":"lun.","code":"4"},{"date":"2026-04-14","day":14,"dayName":"mar.","code":"4"},{"date":"2026-04-15","day":15,"dayName":"mer.","code":"4"},{"date":"2026-04-16","day":16,"dayName":"jeu.","code":"4"},{"date":"2026-04-17","day":17,"dayName":"ven.","code":"4"},{"date":"2026-04-18","day":18,"dayName":"sam.","code":""},{"date":"2026-04-19","day":19,"dayName":"dim.","code":"R"},{"date":"2026-04-20","day":20,"dayName":"lun.","code":"R"},{"date":"2026-04-21","day":21,"dayName":"mar.","code":"1"},{"date":"2026-04-22","day":22,"dayName":"mer.","code":"1"},{"date":"2026-04-23","day":23,"dayName":"jeu.","code":"1"},{"date":"2026-04-24","day":24,"dayName":"ven.","code":"R"},{"date":"2026-04-25","day":25,"dayName":"sam.","code":"R"},{"date":"2026-04-26","day":26,"dayName":"dim.","code":"R"},{"date":"2026-04-27","day":27,"dayName":"lun.","code":"3"},{"date":"2026-04-28","day":28,"dayName":"mar.","code":"3"},{"date":"2026-04-29","day":29,"dayName":"mer.","code":"3"},{"date":"2026-04-30","day":30,"dayName":"jeu.","code":"3"}],"MAI":[{"date":"2026-05-01","day":1,"dayName":"ven.","code":"JF2"},{"date":"2026-05-02","day":2,"dayName":"sam.","code":""},{"date":"2026-05-03","day":3,"dayName":"dim.","code":"R"},{"date":"2026-05-04","day":4,"dayName":"lun.","code":"R"},{"date":"2026-05-05","day":5,"dayName":"mar.","code":"1"},{"date":"2026-05-06","day":6,"dayName":"mer.","code":"1"},{"date":"2026-05-07","day":7,"dayName":"jeu.","code":"1"},{"date":"2026-05-08","day":8,"dayName":"ven.","code":"1"},{"date":"2026-05-09","day":9,"dayName":"sam.","code":"A"},{"date":"2026-05-10","day":10,"dayName":"dim.","code":"A"},{"date":"2026-05-11","day":11,"dayName":"lun.","code":"R"},{"date":"2026-05-12","day":12,"dayName":"mar.","code":"F"},{"date":"2026-05-13","day":13,"dayName":"mer.","code":"F"},{"date":"2026-05-14","day":14,"dayName":"jeu.","code":"JF3"},{"date":"2026-05-15","day":15,"dayName":"ven.","code":"R"},{"date":"2026-05-16","day":16,"dayName":"sam.","code":"R"},{"date":"2026-05-17","day":17,"dayName":"dim.","code":"R"},{"date":"2026-05-18","day":18,"dayName":"lun.","code":"2"},{"date":"2026-05-19","day":19,"dayName":"mar.","code":"2"},{"date":"2026-05-20","day":20,"dayName":"mer.","code":"2"},{"date":"2026-05-21","day":21,"dayName":"jeu.","code":"2"},{"date":"2026-05-22","day":22,"dayName":"ven.","code":"2"},{"date":"2026-05-23","day":23,"dayName":"sam.","code":"R"},{"date":"2026-05-24","day":24,"dayName":"dim.","code":"R"},{"date":"2026-05-25","day":25,"dayName":"lun.","code":"JF4"},{"date":"2026-05-26","day":26,"dayName":"mar.","code":"4"},{"date":"2026-05-27","day":27,"dayName":"mer.","code":"4"},{"date":"2026-05-28","day":28,"dayName":"jeu.","code":"4"},{"date":"2026-05-29","day":29,"dayName":"ven.","code":"4"},{"date":"2026-05-30","day":30,"dayName":"sam.","code":""},{"date":"2026-05-31","day":31,"dayName":"dim.","code":"R"}],"JUIN":[{"date":"2026-06-01","day":1,"dayName":"lun.","code":"R"},{"date":"2026-06-02","day":2,"dayName":"mar.","code":"F"},{"date":"2026-06-03","day":3,"dayName":"mer.","code":"F"},{"date":"2026-06-04","day":4,"dayName":"jeu.","code":"RTT"},{"date":"2026-06-05","day":5,"dayName":"ven.","code":"C"},{"date":"2026-06-06","day":6,"dayName":"sam.","code":"R"},{"date":"2026-06-07","day":7,"dayName":"dim.","code":"R"},{"date":"2026-06-08","day":8,"dayName":"lun.","code":"2"},{"date":"2026-06-09","day":9,"dayName":"mar.","code":"2"},{"date":"2026-06-10","day":10,"dayName":"mer.","code":"F"},{"date":"2026-06-11","day":11,"dayName":"jeu.","code":"F"},{"date":"2026-06-12","day":12,"dayName":"ven.","code":"F"},{"date":"2026-06-13","day":13,"dayName":"sam.","code":"R"},{"date":"2026-06-14","day":14,"dayName":"dim.","code":"R"},{"date":"2026-06-15","day":15,"dayName":"lun.","code":"4"},{"date":"2026-06-16","day":16,"dayName":"mar.","code":"4"},{"date":"2026-06-17","day":17,"dayName":"mer.","code":"4"},{"date":"2026-06-18","day":18,"dayName":"jeu.","code":"4"},{"date":"2026-06-19","day":19,"dayName":"ven.","code":"4"},{"date":"2026-06-20","day":20,"dayName":"sam.","code":""},{"date":"2026-06-21","day":21,"dayName":"dim.","code":"R"},{"date":"2026-06-22","day":22,"dayName":"lun.","code":"R"},{"date":"2026-06-23","day":23,"dayName":"mar.","code":"F"},{"date":"2026-06-24","day":24,"dayName":"mer.","code":"F"},{"date":"2026-06-25","day":25,"dayName":"jeu.","code":"F"},{"date":"2026-06-26","day":26,"dayName":"ven.","code":"F"},{"date":"2026-06-27","day":27,"dayName":"sam.","code":"R"},{"date":"2026-06-28","day":28,"dayName":"dim.","code":"R"},{"date":"2026-06-29","day":29,"dayName":"lun.","code":"R"},{"date":"2026-06-30","day":30,"dayName":"mar.","code":"1"}],"JUILLET":[{"date":"2026-07-01","day":1,"dayName":"mer.","code":"1"},{"date":"2026-07-02","day":2,"dayName":"jeu.","code":"1"},{"date":"2026-07-03","day":3,"dayName":"ven.","code":"1"},{"date":"2026-07-04","day":4,"dayName":"sam.","code":"1"},{"date":"2026-07-05","day":5,"dayName":"dim.","code":"A"},{"date":"2026-07-06","day":6,"dayName":"lun.","code":"R"},{"date":"2026-07-07","day":7,"dayName":"mar.","code":"F"},{"date":"2026-07-08","day":8,"dayName":"mer.","code":"F"},{"date":"2026-07-09","day":9,"dayName":"jeu.","code":"F"},{"date":"2026-07-10","day":10,"dayName":"ven.","code":"F"},{"date":"2026-07-11","day":11,"dayName":"sam.","code":"R"},{"date":"2026-07-12","day":12,"dayName":"dim.","code":"R"},{"date":"2026-07-13","day":13,"dayName":"lun.","code":"2"},{"date":"2026-07-14","day":14,"dayName":"mar.","code":"JF5"},{"date":"2026-07-15","day":15,"dayName":"mer.","code":"2"},{"date":"2026-07-16","day":16,"dayName":"jeu.","code":"2"},{"date":"2026-07-17","day":17,"dayName":"ven.","code":"2"},{"date":"2026-07-18","day":18,"dayName":"sam.","code":"R"},{"date":"2026-07-19","day":19,"dayName":"dim.","code":"R"},{"date":"2026-07-20","day":20,"dayName":"lun.","code":"C"},{"date":"2026-07-21","day":21,"dayName":"mar.","code":"C"},{"date":"2026-07-22","day":22,"dayName":"mer.","code":"C"},{"date":"2026-07-23","day":23,"dayName":"jeu.","code":"C"},{"date":"2026-07-24","day":24,"dayName":"ven.","code":"C"},{"date":"2026-07-25","day":25,"dayName":"sam.","code":"R"},{"date":"2026-07-26","day":26,"dayName":"dim.","code":"R"},{"date":"2026-07-27","day":27,"dayName":"lun.","code":"C"},{"date":"2026-07-28","day":28,"dayName":"mar.","code":"C"},{"date":"2026-07-29","day":29,"dayName":"mer.","code":"C"},{"date":"2026-07-30","day":30,"dayName":"jeu.","code":"C"},{"date":"2026-07-31","day":31,"dayName":"ven.","code":"C"}],"AOUT":[{"date":"2026-08-01","day":1,"dayName":"sam.","code":"R"},{"date":"2026-08-02","day":2,"dayName":"dim.","code":"R"},{"date":"2026-08-03","day":3,"dayName":"lun.","code":"R"},{"date":"2026-08-04","day":4,"dayName":"mar.","code":"1"},{"date":"2026-08-05","day":5,"dayName":"mer.","code":"1"},{"date":"2026-08-06","day":6,"dayName":"jeu.","code":"1"},{"date":"2026-08-07","day":7,"dayName":"ven.","code":"1"},{"date":"2026-08-08","day":8,"dayName":"sam.","code":"1"},{"date":"2026-08-09","day":9,"dayName":"dim.","code":"A"},{"date":"2026-08-10","day":10,"dayName":"lun.","code":"2"},{"date":"2026-08-11","day":11,"dayName":"mar.","code":"2"},{"date":"2026-08-12","day":12,"dayName":"mer.","code":"2"},{"date":"2026-08-13","day":13,"dayName":"jeu.","code":"2"},{"date":"2026-08-14","day":14,"dayName":"ven.","code":"2"},{"date":"2026-08-15","day":15,"dayName":"sam.","code":"R"},{"date":"2026-08-16","day":16,"dayName":"dim.","code":"R"},{"date":"2026-08-17","day":17,"dayName":"lun.","code":"4"},{"date":"2026-08-18","day":18,"dayName":"mar.","code":"4"},{"date":"2026-08-19","day":19,"dayName":"mer.","code":"4"},{"date":"2026-08-20","day":20,"dayName":"jeu.","code":"4"},{"date":"2026-08-21","day":21,"dayName":"ven.","code":"4"},{"date":"2026-08-22","day":22,"dayName":"sam.","code":""},{"date":"2026-08-23","day":23,"dayName":"dim.","code":"R"},{"date":"2026-08-24","day":24,"dayName":"lun.","code":"R"},{"date":"2026-08-25","day":25,"dayName":"mar.","code":"F"},{"date":"2026-08-26","day":26,"dayName":"mer.","code":"F"},{"date":"2026-08-27","day":27,"dayName":"jeu.","code":"F"},{"date":"2026-08-28","day":28,"dayName":"ven.","code":"F"},{"date":"2026-08-29","day":29,"dayName":"sam.","code":"R"},{"date":"2026-08-30","day":30,"dayName":"dim.","code":"R"},{"date":"2026-08-31","day":31,"dayName":"lun.","code":"3"}],"SEPTEMBRE":[{"date":"2026-09-01","day":1,"dayName":"mar.","code":"3"},{"date":"2026-09-02","day":2,"dayName":"mer.","code":"3"},{"date":"2026-09-03","day":3,"dayName":"jeu.","code":"3"},{"date":"2026-09-04","day":4,"dayName":"ven.","code":"3"},{"date":"2026-09-05","day":5,"dayName":"sam.","code":""},{"date":"2026-09-06","day":6,"dayName":"dim.","code":"R"},{"date":"2026-09-07","day":7,"dayName":"lun.","code":"R"},{"date":"2026-09-08","day":8,"dayName":"mar.","code":"1"},{"date":"2026-09-09","day":9,"dayName":"mer.","code":"1"},{"date":"2026-09-10","day":10,"dayName":"jeu.","code":"1"},{"date":"2026-09-11","day":11,"dayName":"ven.","code":"1"},{"date":"2026-09-12","day":12,"dayName":"sam.","code":"1"},{"date":"2026-09-13","day":13,"dayName":"dim.","code":"A"},{"date":"2026-09-14","day":14,"dayName":"lun.","code":"2"},{"date":"2026-09-15","day":15,"dayName":"mar.","code":"2"},{"date":"2026-09-16","day":16,"dayName":"mer.","code":"2"},{"date":"2026-09-17","day":17,"dayName":"jeu.","code":"2"},{"date":"2026-09-18","day":18,"dayName":"ven.","code":"2"},{"date":"2026-09-19","day":19,"dayName":"sam.","code":"R"},{"date":"2026-09-20","day":20,"dayName":"dim.","code":"R"},{"date":"2026-09-21","day":21,"dayName":"lun.","code":"4"},{"date":"2026-09-22","day":22,"dayName":"mar.","code":"4"},{"date":"2026-09-23","day":23,"dayName":"mer.","code":"4"},{"date":"2026-09-24","day":24,"dayName":"jeu.","code":"4"},{"date":"2026-09-25","day":25,"dayName":"ven.","code":"4"},{"date":"2026-09-26","day":26,"dayName":"sam.","code":""},{"date":"2026-09-27","day":27,"dayName":"dim.","code":"R"},{"date":"2026-09-28","day":28,"dayName":"lun.","code":"3"},{"date":"2026-09-29","day":29,"dayName":"mar.","code":"3"},{"date":"2026-09-30","day":30,"dayName":"mer.","code":"3"},{"date":"2026-09-31","day":31,"dayName":"","code":""}],"OCTOBRE":[{"date":"2026-10-01","day":1,"dayName":"jeu.","code":"3"},{"date":"2026-10-02","day":2,"dayName":"ven.","code":"3"},{"date":"2026-10-03","day":3,"dayName":"sam.","code":""},{"date":"2026-10-04","day":4,"dayName":"dim.","code":"R"},{"date":"2026-10-05","day":5,"dayName":"lun.","code":"2"},{"date":"2026-10-06","day":6,"dayName":"mar.","code":"2"},{"date":"2026-10-07","day":7,"dayName":"mer.","code":"2"},{"date":"2026-10-08","day":8,"dayName":"jeu.","code":"2"},{"date":"2026-10-09","day":9,"dayName":"ven.","code":"2"},{"date":"2026-10-10","day":10,"dayName":"sam.","code":"R"},{"date":"2026-10-11","day":11,"dayName":"dim.","code":"R"},{"date":"2026-10-12","day":12,"dayName":"lun.","code":"4"},{"date":"2026-10-13","day":13,"dayName":"mar.","code":"4"},{"date":"2026-10-14","day":14,"dayName":"mer.","code":"4"},{"date":"2026-10-15","day":15,"dayName":"jeu.","code":"4"},{"date":"2026-10-16","day":16,"dayName":"ven.","code":"4"},{"date":"2026-10-17","day":17,"dayName":"sam.","code":""},{"date":"2026-10-18","day":18,"dayName":"dim.","code":"R"},{"date":"2026-10-19","day":19,"dayName":"lun.","code":"R"},{"date":"2026-10-20","day":20,"dayName":"mar.","code":"R"},{"date":"2026-10-21","day":21,"dayName":"mer.","code":"R"},{"date":"2026-10-22","day":22,"dayName":"jeu.","code":"F"},{"date":"2026-10-23","day":23,"dayName":"ven.","code":"R"},{"date":"2026-10-24","day":24,"dayName":"sam.","code":"R"},{"date":"2026-10-25","day":25,"dayName":"dim.","code":"R"},{"date":"2026-10-26","day":26,"dayName":"lun.","code":"R"},{"date":"2026-10-27","day":27,"dayName":"mar.","code":"1"},{"date":"2026-10-28","day":28,"dayName":"mer.","code":"1"},{"date":"2026-10-29","day":29,"dayName":"jeu.","code":"1"},{"date":"2026-10-30","day":30,"dayName":"ven.","code":"1"},{"date":"2026-10-31","day":31,"dayName":"sam.","code":"1"}],"NOVEMBRE":[{"date":"2026-11-01","day":1,"dayName":"dim.","code":"A"},{"date":"2026-11-02","day":2,"dayName":"lun.","code":"R"},{"date":"2026-11-03","day":3,"dayName":"mar.","code":"R"},{"date":"2026-11-04","day":4,"dayName":"mer.","code":"3"},{"date":"2026-11-05","day":5,"dayName":"jeu.","code":"3"},{"date":"2026-11-06","day":6,"dayName":"ven.","code":"3"},{"date":"2026-11-07","day":7,"dayName":"sam.","code":""},{"date":"2026-11-08","day":8,"dayName":"dim.","code":"R"},{"date":"2026-11-09","day":9,"dayName":"lun.","code":"2"},{"date":"2026-11-10","day":10,"dayName":"mar.","code":"2"},{"date":"2026-11-11","day":11,"dayName":"mer.","code":"R"},{"date":"2026-11-12","day":12,"dayName":"jeu.","code":"2"},{"date":"2026-11-13","day":13,"dayName":"ven.","code":"2"},{"date":"2026-11-14","day":14,"dayName":"sam.","code":"R"},{"date":"2026-11-15","day":15,"dayName":"dim.","code":"R"},{"date":"2026-11-16","day":16,"dayName":"lun.","code":"4"},{"date":"2026-11-17","day":17,"dayName":"mar.","code":"4"},{"date":"2026-11-18","day":18,"dayName":"mer.","code":"4"},{"date":"2026-11-19","day":19,"dayName":"jeu.","code":"4"},{"date":"2026-11-20","day":20,"dayName":"ven.","code":"4"},{"date":"2026-11-21","day":21,"dayName":"sam.","code":""},{"date":"2026-11-22","day":22,"dayName":"dim.","code":"R"},{"date":"2026-11-23","day":23,"dayName":"lun.","code":"3"},{"date":"2026-11-24","day":24,"dayName":"mar.","code":"3"},{"date":"2026-11-25","day":25,"dayName":"mer.","code":"3"},{"date":"2026-11-26","day":26,"dayName":"jeu.","code":"3"},{"date":"2026-11-27","day":27,"dayName":"ven.","code":"3"},{"date":"2026-11-28","day":28,"dayName":"sam.","code":""},{"date":"2026-11-29","day":29,"dayName":"dim.","code":"R"},{"date":"2026-11-30","day":30,"dayName":"lun.","code":"R"},{"date":"2026-11-31","day":31,"dayName":"","code":""}],"DECEMBRE":[{"date":"2026-12-01","day":1,"dayName":"mar.","code":"1"},{"date":"2026-12-02","day":2,"dayName":"mer.","code":"1"},{"date":"2026-12-03","day":3,"dayName":"jeu.","code":"1"},{"date":"2026-12-04","day":4,"dayName":"ven.","code":"1"},{"date":"2026-12-05","day":5,"dayName":"sam.","code":"1"},{"date":"2026-12-06","day":6,"dayName":"dim.","code":"A"},{"date":"2026-12-07","day":7,"dayName":"lun.","code":"R"},{"date":"2026-12-08","day":8,"dayName":"mar.","code":"R"},{"date":"2026-12-09","day":9,"dayName":"mer.","code":"R"},{"date":"2026-12-10","day":10,"dayName":"jeu.","code":"F"},{"date":"2026-12-11","day":11,"dayName":"ven.","code":"R"},{"date":"2026-12-12","day":12,"dayName":"sam.","code":"R"},{"date":"2026-12-13","day":13,"dayName":"dim.","code":"R"},{"date":"2026-12-14","day":14,"dayName":"lun.","code":"2"},{"date":"2026-12-15","day":15,"dayName":"mar.","code":"2"},{"date":"2026-12-16","day":16,"dayName":"mer.","code":"2"},{"date":"2026-12-17","day":17,"dayName":"jeu.","code":"2"},{"date":"2026-12-18","day":18,"dayName":"ven.","code":"2"},{"date":"2026-12-19","day":19,"dayName":"sam.","code":"R"},{"date":"2026-12-20","day":20,"dayName":"dim.","code":"R"},{"date":"2026-12-21","day":21,"dayName":"lun.","code":"4"},{"date":"2026-12-22","day":22,"dayName":"mar.","code":"4"},{"date":"2026-12-23","day":23,"dayName":"mer.","code":"4"},{"date":"2026-12-24","day":24,"dayName":"jeu.","code":"4"},{"date":"2026-12-25","day":25,"dayName":"ven.","code":""},{"date":"2026-12-26","day":26,"dayName":"sam.","code":"R"},{"date":"2026-12-27","day":27,"dayName":"dim.","code":"R"},{"date":"2026-12-28","day":28,"dayName":"lun.","code":"3"},{"date":"2026-12-29","day":29,"dayName":"mar.","code":"3"},{"date":"2026-12-30","day":30,"dayName":"mer.","code":"3"},{"date":"2026-12-31","day":31,"dayName":"jeu.","code":"3"}]}};
+
+const MONTHS = ['JANVIER','FEVRIER','MARS','AVRIL','MAI','JUIN','JUILLET','AOUT','SEPTEMBRE','OCTOBRE','NOVEMBRE','DECEMBRE'];
+const MLABELS = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+const MONTH_OFFSETS = {JANVIER:3,FEVRIER:25,MARS:47,AVRIL:69,MAI:91,JUIN:113,JUILLET:135,AOUT:157,SEPTEMBRE:180,OCTOBRE:203,NOVEMBRE:226,DECEMBRE:249};
+const MGMT = ['FERREIRA','CONDETTE','LEON','PHILIPPE'];
+
+let SCHEDULE = SCHEDULE_DATA;
+let person = null, monthIdx = 0;
+
+// ── Heures par code ──
+// F = Facilité (10h), postes 1/2/4 = 7h30, poste 3 = 8h30
+const HOURS = {'1':7.5,'2':7.5,'3':8.5,'4':7.5,'F':10,'f':10};
+function getHours(code) {
+  if (!code) return 0;
+  const c = code.trim();
+  if (HOURS[c] !== undefined) return HOURS[c];
+  if (c.toLowerCase().startsWith('f/')) return 10; // f/rtt, f/c etc = formation
+  return 0;
+}
+function calcMonthHours(data) {
+  return data.reduce((sum, d) => sum + getHours(d.code), 0);
+}
+function fmtHours(h) {
+  const hrs = Math.floor(h);
+  const mins = Math.round((h - hrs) * 60);
+  return mins > 0 ? `${hrs}h${String(mins).padStart(2,'0')}` : `${hrs}h`;
+}
+
+// ── Code class ──
+function cc(code) {
+  if (!code) return '';
+  const c = code.toLowerCase().replace(/\s/g,'');
+  if (c==='1') return 'code-1';
+  if (c==='2') return 'code-2';
+  if (c==='3') return 'code-3';
+  if (c==='4') return 'code-4';
+  if (c==='f'||c.startsWith('f/')) return 'code-f';
+  if (c==='r') return 'code-r';
+  if (c.includes('rtt')) return 'code-rtt';
+  if (c==='a') return 'code-a';
+  if (c.startsWith('jf')) return 'code-jf';
+  if (c==='c') return 'code-c';
+  if (c==='ma') return 'code-ma';
+  if (c.includes('rcn')) return 'code-rcn';
+  return 'code-other';
+}
+
+function codeLabel(code) {
+  if (!code) return '';
+  if (code.toUpperCase() === 'F') return 'FAC';
+  return code.toUpperCase();
+}
+function buildGrid() {
+  // Date du jour
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('fr-FR', {weekday:'long', day:'numeric', month:'long'});
+  document.getElementById('selDate').textContent = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+
+  const el = document.getElementById('personsGrid');
+  el.innerHTML = '';
+  const equipe = Object.keys(SCHEDULE).filter(n => !MGMT.some(k=>n.toUpperCase().includes(k)));
+
+  const list = document.createElement('div');
+  list.className = 'persons-list';
+  equipe.forEach(name => {
+    const initials = name.split(' ').map(w=>w[0]||'').join('').substring(0,2).toUpperCase();
+    const card = document.createElement('div');
+    card.className = 'person-card';
+    card.innerHTML = `<div class="av">${initials}</div><div><div class="pn">${name}</div><div class="pr">Équipe</div></div><div class="arr">›</div>`;
+    card.onclick = () => openPlan(name);
+    list.appendChild(card);
+  });
+  el.appendChild(list);
+}
+
+// ── Planning ──
+function openPlan(name) {
+  person = name;
+  document.getElementById('screenSel').style.display = 'none';
+  const ps = document.getElementById('screenPlan');
+  ps.style.display = 'flex';
+  document.getElementById('planName').innerHTML = `<span>${name}</span>`;
+
+  const tabs = document.getElementById('monthTabs');
+  tabs.innerHTML = '';
+  MONTHS.forEach((m,i) => {
+    const t = document.createElement('button');
+    t.className = 'mtab';
+    t.textContent = MLABELS[i].substring(0,3).toUpperCase();
+    t.onclick = () => { monthIdx=i; render(); };
+    tabs.appendChild(t);
+  });
+  monthIdx = Math.min(Math.max(new Date().getMonth(),0),11);
+
+  // Total annuel
+  let totalYear = 0;
+  MONTHS.forEach(m => {
+    const d = (SCHEDULE[name]||{})[m]||[];
+    totalYear += calcMonthHours(d);
+  });
+  const annualBar = document.getElementById('annualBar');
+  const annualVal = document.getElementById('annualVal');
+  if (totalYear > 0) {
+    annualVal.textContent = fmtHours(totalYear);
+    annualBar.style.display = 'flex';
+  } else {
+    annualBar.style.display = 'none';
+  }
+
+  render();
+}
+
+function render() {
+  document.querySelectorAll('.mtab').forEach((t,i)=>t.classList.toggle('active',i===monthIdx));
+  const mKey = MONTHS[monthIdx];
+  const data = (SCHEDULE[person]||{})[mKey]||[];
+  document.getElementById('monthName').textContent = MLABELS[monthIdx];
+  document.getElementById('prevBtn').disabled = monthIdx===0;
+  document.getElementById('nextBtn').disabled = monthIdx===11;
+  document.getElementById('calScroll').scrollTop = 0;
+
+  // Heures du mois
+  const totalH = calcMonthHours(data);
+  const hoursEl = document.getElementById('monthHours');
+  if (totalH > 0) {
+    hoursEl.textContent = '⏱ ' + fmtHours(totalH) + ' ce mois';
+    hoursEl.style.display = 'inline-flex';
+  } else {
+    hoursEl.style.display = 'none';
+  }
+
+  // Stats
+  const stats = {};
+  data.forEach(d=>{if(d.code){const k=d.code.toUpperCase();stats[k]=(stats[k]||0)+1;}});
+  const sr = document.getElementById('statsRow'); sr.innerHTML='';
+  ['1','2','3','4','F','R','RTT','A','C','RCN','MA'].forEach(code=>{
+    if(!stats[code])return;
+    const ch=document.createElement('div');ch.className='schip';
+    ch.innerHTML=`<span class="day-code ${cc(code)}" style="margin:0;padding:2px 5px;font-size:10px;">${codeLabel(code)}</span><strong>${stats[code]}</strong>`;
+    sr.appendChild(ch);
+  });
+
+  // Grid
+  const grid = document.getElementById('dayGrid'); grid.innerHTML='';
+  if (!data.length) { grid.innerHTML='<div style="grid-column:1/-1;padding:24px;text-align:center;color:var(--dim);font-size:13px;">Aucune donnée</div>'; return; }
+
+  const fd = new Date(data[0].date);
+  const year=fd.getFullYear(), month=fd.getMonth();
+  const dim = new Date(year,month+1,0).getDate();
+  let sdow = new Date(year,month,1).getDay();
+  sdow = sdow===0?6:sdow-1;
+
+  const dm={};
+  data.forEach(d=>{if(d.date){const day=parseInt(d.date.split('-')[2]);if(day>=1&&day<=31)dm[day]=d;}});
+  const today=new Date();
+  const dayNames=['dim.','lun.','mar.','mer.','jeu.','ven.','sam.'];
+
+  for(let i=0;i<sdow;i++){const e=document.createElement('div');e.className='day-cell empty';grid.appendChild(e);}
+  for(let d=1;d<=dim;d++){
+    const cell=document.createElement('div');
+    const dd=dm[d];
+    const dow=new Date(year,month,d).getDay();
+    const isW=dow===0||dow===6;
+    const isT=today.getFullYear()===year&&today.getMonth()===month&&today.getDate()===d;
+    cell.className='day-cell'+(isW?' weekend':'')+(isT?' today':'');
+    let cHTML='';
+    if(dd&&dd.code){cHTML=`<div class="day-code ${cc(dd.code)}">${codeLabel(dd.code)}</div>`;}
+    cell.innerHTML=`<div class="day-n">${d}</div><div class="day-lbl">${dd?dd.dayName:dayNames[dow]}</div>${cHTML}`;
+    grid.appendChild(cell);
+  }
+  // Scroll tab into view
+  document.querySelectorAll('.mtab')[monthIdx]?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+}
+
+function changeMonth(dir){
+  monthIdx=Math.max(0,Math.min(11,monthIdx+dir));
+  render();
+}
+function showSel(){
+  document.getElementById('screenSel').style.display='';
+  document.getElementById('screenPlan').style.display='none';
+}
+
+// ── Import ──
+function showOverlay(){
+  document.getElementById('overlay').classList.add('show');
+  document.getElementById('importStatus').textContent='';
+  document.getElementById('importStatus').className='import-status';
+}
+function closeOverlay(){document.getElementById('overlay').classList.remove('show');}
+
+document.getElementById('uploadBtn').addEventListener('click', showOverlay);
+document.getElementById('dropZone').addEventListener('click', ()=>document.getElementById('fileInput').click());
+document.getElementById('fileInput').addEventListener('change', e=>{if(e.target.files[0])handleFile(e.target.files[0]);e.target.value='';});
+document.getElementById('overlay').addEventListener('click', e=>{if(e.target===document.getElementById('overlay'))closeOverlay();});
+
+let dragN=0;
+document.addEventListener('dragenter',e=>{e.preventDefault();dragN++;if(dragN===1){showOverlay();setTimeout(()=>document.getElementById('dropZone').classList.add('over'),50);}});
+document.addEventListener('dragleave',e=>{dragN--;if(dragN===0)document.getElementById('dropZone').classList.remove('over');});
+document.addEventListener('dragover',e=>e.preventDefault());
+document.addEventListener('drop',e=>{e.preventDefault();dragN=0;document.getElementById('dropZone').classList.remove('over');const f=e.dataTransfer.files[0];if(f){showOverlay();setTimeout(()=>handleFile(f),80);}});
+document.getElementById('dropZone').addEventListener('dragover',e=>{e.preventDefault();e.stopPropagation();document.getElementById('dropZone').classList.add('over');});
+document.getElementById('dropZone').addEventListener('dragleave',e=>{e.stopPropagation();document.getElementById('dropZone').classList.remove('over');});
+document.getElementById('dropZone').addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();dragN=0;document.getElementById('dropZone').classList.remove('over');const f=e.dataTransfer.files[0];if(f)handleFile(f);});
+
+// ── Parseur XLSX pur JS (sans librairie externe) ──
+async function parseExcel(arrayBuffer) {
+  const entries = await readZip(arrayBuffer);
+  if (!entries['xl/workbook.xml']) throw new Error('Fichier Excel invalide');
+
+  const wbXml   = new TextDecoder().decode(entries['xl/workbook.xml']);
+  const relsXml  = new TextDecoder().decode(entries['xl/_rels/workbook.xml.rels']);
+
+  // Trouver la feuille 2026
+  const sm = wbXml.match(/name="2026"[^>]*r:id="(rId\d+)"|r:id="(rId\d+)"[^>]*name="2026"/);
+  if (!sm) throw new Error('Feuille 2026 non trouvée dans le fichier');
+  const rId = sm[1] || sm[2];
+  const tm = relsXml.match(new RegExp(`Id="${rId}"[^>]+Target="([^"]+)"`));
+  if (!tm) throw new Error('Lien feuille introuvable');
+  const sheetPath = `xl/${tm[1]}`;
+  if (!entries[sheetPath]) throw new Error('Données feuille introuvables');
+
+  // Shared strings
+  const ssXml = entries['xl/sharedStrings.xml']
+    ? new TextDecoder().decode(entries['xl/sharedStrings.xml']) : '';
+  const ss = [];
+  const siRe = /<si>([\s\S]*?)<\/si>/g;
+  let sm2;
+  while ((sm2 = siRe.exec(ssXml)) !== null) {
+    const texts = [];
+    const tRe = /<t[^>]*>([^<]*)<\/t>/g;
+    let tm2;
+    while ((tm2 = tRe.exec(sm2[1])) !== null) texts.push(tm2[1]);
+    ss.push(texts.join(''));
+  }
+
+  // Parser la feuille en tableau 2D
+  const sheetXml = new TextDecoder().decode(entries[sheetPath]);
+  const raw = [];
+  const rowRe = /<row[^>]+r="(\d+)"[^>]*>([\s\S]*?)<\/row>/g;
+  let rm;
+  while ((rm = rowRe.exec(sheetXml)) !== null) {
+    const ri = parseInt(rm[1]) - 1;
+    if (!raw[ri]) raw[ri] = [];
+    const cellRe = /<c r="([A-Z]+)\d+"([^>]*)>([\s\S]*?)<\/c>/g;
+    let cm;
+    while ((cm = cellRe.exec(rm[2])) !== null) {
+      const ci = colToIdx(cm[1]);
+      const isStr = cm[2].includes('t="s"');
+      const vMatch = cm[3].match(/<v>([^<]*)<\/v>/);
+      if (!vMatch) continue;
+      const rawVal = vMatch[1];
+      // Pour les cellules non-string : valeur valide seulement si c'est 1,2,3,4
+      if (!isStr) {
+        const n = parseFloat(rawVal);
+        if (n >= 1 && n <= 4 && Number.isInteger(n)) {
+          raw[ri][ci] = rawVal; // codes de poste valides
+        } else if (n >= 40000) {
+          raw[ri][ci] = rawVal; // sériaux de date
+        }
+        // sinon on ignore (artefacts numériques)
+      } else {
+        raw[ri][ci] = ss[parseInt(rawVal)] || '';
+      }
+    }
+  }
+
+  return extractSchedule(raw);
+}
+
+function colToIdx(col) {
+  let n = 0;
+  for (const c of col) n = n * 26 + c.charCodeAt(0) - 64;
+  return n - 1;
+}
+
+function extractSchedule(raw) {
+  const MKEYS = ['JANVIER','FEVRIER','MARS','AVRIL','MAI','JUIN','JUILLET','AOUT','SEPTEMBRE','OCTOBRE','NOVEMBRE','DECEMBRE'];
+  const MNUM  = {JANVIER:1,FEVRIER:2,MARS:3,AVRIL:4,MAI:5,JUIN:6,JUILLET:7,AOUT:8,SEPTEMBRE:9,OCTOBRE:10,NOVEMBRE:11,DECEMBRE:12};
+  const SKIP  = new Set(['MANAGEMENT','EQUIPE','NOMS','JOURS','POSTES / HORAIRES','POSTES / HORAI']);
+  const MGMT  = ['FERREIRA','CONDETTE','LEON','PHILIPPE'];
+  const TEAM  = ['BELENUS','HENAUT','HUGUES','LE CALVEZ','TRONEL','LOBE'];
+  const norm  = s => String(s||'').trim().toUpperCase()
+    .replace(/[ÀÂÄÁ]/g,'A').replace(/[ÉÈÊË]/g,'E').replace(/[ÎÏ]/g,'I')
+    .replace(/[ÔÖ]/g,'O').replace(/[ÛÜÚÙ]/g,'U').replace(/Ç/g,'C');
+
+  function serialToDay(val) {
+    const n = parseFloat(val);
+    if (isNaN(n) || n < 40000) return null;
+    return new Date(Math.round((n - 25569) * 86400000)).getUTCDate();
+  }
+
+  const monthRows = {};
+  for (let r = 0; r < raw.length; r++) {
+    const row = raw[r]; if (!row) continue;
+    for (let c = 1; c <= 2; c++) {
+      const v = norm(row[c]);
+      if (MKEYS.includes(v) && !(v in monthRows)) { monthRows[v] = r; break; }
+    }
+  }
+
+  const result = {};
+  for (const mKey of MKEYS) {
+    const hRow = monthRows[mKey];
+    if (hRow == null) continue;
+    const nomsRow  = raw[hRow + 1] || [];
+    const joursRow = raw[hRow + 2] || [];
+    const mn = MNUM[mKey];
+
+    const dateCols = [];
+    for (let c = 2; c <= 34; c++) {
+      const day = serialToDay(nomsRow[c]);
+      if (day != null && day >= 1 && day <= 31)
+        dateCols.push({c, day,
+          date: `2026-${String(mn).padStart(2,'0')}-${String(day).padStart(2,'0')}`,
+          dayName: String(joursRow[c]||'').trim()});
+    }
+    if (!dateCols.length) continue;
+
+    // Scanner jusqu'à 25 lignes après hRow pour trouver toutes les personnes
+    for (let r = hRow + 3; r <= hRow + 25 && r < raw.length; r++) {
+      const row = raw[r]; if (!row) continue;
+      const name = String(row[1]||'').trim();
+      const nameUp = norm(name);
+      if (!name || SKIP.has(nameUp)) continue;
+      if (!TEAM.some(k => nameUp.includes(k))) continue;
+      if (!result[name]) result[name] = {};
+      result[name][mKey] = dateCols.map(dc => {
+        const v = row[dc.c];
+        const code = (v != null && String(v).trim() && String(v).trim() !== 'null') ? String(v).trim() : '';
+        return {date:dc.date, day:dc.day, dayName:dc.dayName, code};
+      });
+    }
+  }
+  return result;
+}
+
+// ── Lecteur ZIP natif (DecompressionStream intégré au navigateur) ──
+async function readZip(buffer) {
+  const view  = new DataView(buffer);
+  const bytes = new Uint8Array(buffer);
+  const out   = {};
+
+  // Trouver End of Central Directory
+  let eocd = -1;
+  for (let i = bytes.length - 22; i >= Math.max(0, bytes.length - 65556); i--) {
+    if (view.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+  }
+  if (eocd < 0) throw new Error('Format ZIP invalide');
+
+  const cdOffset = view.getUint32(eocd + 16, true);
+  const cdCount  = view.getUint16(eocd + 10, true);
+
+  let pos = cdOffset;
+  for (let i = 0; i < cdCount; i++) {
+    if (view.getUint32(pos, true) !== 0x02014b50) break;
+    const fnLen    = view.getUint16(pos + 28, true);
+    const extraLen = view.getUint16(pos + 30, true);
+    const cmtLen   = view.getUint16(pos + 32, true);
+    const lhOffset = view.getUint32(pos + 42, true);
+    const fname    = new TextDecoder().decode(bytes.slice(pos + 46, pos + 46 + fnLen));
+    pos += 46 + fnLen + extraLen + cmtLen;
+
+    const lhFnLen    = view.getUint16(lhOffset + 26, true);
+    const lhExtraLen = view.getUint16(lhOffset + 28, true);
+    const dataStart  = lhOffset + 30 + lhFnLen + lhExtraLen;
+    const compSize   = view.getUint32(lhOffset + 18, true);
+    const method     = view.getUint16(lhOffset + 8, true);
+    const compData   = bytes.slice(dataStart, dataStart + compSize);
+
+    if (method === 0) {
+      out[fname] = compData;
+    } else if (method === 8) {
+      try {
+        const ds = new DecompressionStream('deflate-raw');
+        const w  = ds.writable.getWriter();
+        const r  = ds.readable.getReader();
+        w.write(compData); w.close();
+        const chunks = []; let total = 0;
+        while (true) {
+          const {done, value} = await r.read();
+          if (done) break;
+          chunks.push(value); total += value.length;
+        }
+        const result = new Uint8Array(total);
+        let off = 0;
+        for (const ch of chunks) { result.set(ch, off); off += ch.length; }
+        out[fname] = result;
+      } catch(e) { out[fname] = new Uint8Array(0); }
+    }
+  }
+  return out;
+}
+
+function handleFile(file) {
+  const st = document.getElementById('importStatus');
+  if (!file.name.match(/\.xlsx?$/i)) {
+    st.textContent = '❌ Format invalide — .xlsx uniquement';
+    st.className = 'import-status err'; return;
+  }
+  st.textContent = '⏳ Lecture en cours…'; st.className = 'import-status';
+  const reader = new FileReader();
+  reader.onload = async ev => {
+    try {
+      const newS = await parseExcel(ev.target.result);
+      const count = Object.keys(newS).length;
+      if (count === 0) throw new Error('Aucune personne trouvée');
+      SCHEDULE = newS;
+      st.textContent = `✅ ${count} personnes chargées !`;
+      document.getElementById('fileLabel').textContent = `Mis à jour • ${file.name}`;
+      document.getElementById('badge').style.display = 'inline';
+      buildGrid();
+      if (person && SCHEDULE[person]) render();
+      else if (person) showSel();
+      setTimeout(closeOverlay, 1800);
+    } catch(err) {
+      st.textContent = '❌ ' + err.message;
+      st.className = 'import-status err';
+    }
+  };
+  reader.onerror = () => { st.textContent = '❌ Impossible de lire le fichier'; st.className = 'import-status err'; };
+  reader.readAsArrayBuffer(file);
+}
+
+
+
+// ── Export ICS ──
+const POSTE_HOURS = {
+  '1': {start:'061000', end:'134000', label:'Poste 1'},
+  '2': {start:'133000', end:'210000', label:'Poste 2'},
+  '3': {start:'205000', end:'053000+1', label:'Poste 3'},
+  '4': {start:'225000', end:'062000+1', label:'Poste 4'},
+  'F': {start:'080000', end:'180000', label:'FAC'},
+  'f': {start:'080000', end:'180000', label:'FAC'},
+};
+
+function exportICS() {
+  if (!person) return;
+  const allData = SCHEDULE[person] || {};
+  const lines = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Planning 2026//FR',
+    'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
+    `X-WR-CALNAME:Planning ${person}`,
+    'X-WR-TIMEZONE:Europe/Paris',
+  ];
+
+  let count = 0;
+  for (const mKey of MONTHS) {
+    const data = allData[mKey] || [];
+    for (const d of data) {
+      if (!d.code || !d.date) continue;
+      const codeKey = d.code.trim();
+      // Trouver le poste correspondant
+      let poste = null;
+      if (POSTE_HOURS[codeKey]) {
+        poste = POSTE_HOURS[codeKey];
+      } else if (codeKey.toLowerCase().startsWith('f/')) {
+        poste = POSTE_HOURS['F'];
+      }
+      if (!poste) continue;
+
+      const dateBase = d.date.replace(/-/g,''); // 20260101
+      const uid = `${dateBase}-${codeKey}-${person.replace(/\s/g,'')}@planning2026`;
+
+      // Calcul date fin (si +1 = lendemain)
+      let startDate = dateBase;
+      let endDate = dateBase;
+      let startTime = poste.start;
+      let endTime = poste.end;
+
+      if (endTime.includes('+1')) {
+        endTime = endTime.replace('+1','');
+        // Calculer lendemain
+        const dt = new Date(d.date);
+        dt.setDate(dt.getDate() + 1);
+        endDate = dt.toISOString().slice(0,10).replace(/-/g,'');
+      }
+
+      const summary = `${poste.label} - ${codeLabel(codeKey)}`;
+
+      lines.push('BEGIN:VEVENT');
+      lines.push(`UID:${uid}`);
+      lines.push(`DTSTAMP:${new Date().toISOString().replace(/[-:]/g,'').slice(0,15)}Z`);
+      lines.push(`DTSTART;TZID=Europe/Paris:${startDate}T${startTime}`);
+      lines.push(`DTEND;TZID=Europe/Paris:${endDate}T${endTime}`);
+      lines.push(`SUMMARY:${summary}`);
+      lines.push(`DESCRIPTION:Code: ${codeKey}`);
+      lines.push('END:VEVENT');
+      count++;
+    }
+  }
+
+  lines.push('END:VCALENDAR');
+
+  if (count === 0) {
+    alert('Aucun poste à exporter pour ce planning.');
+    return;
+  }
+
+  const blob = new Blob([lines.join('\r\n')], {type:'text/calendar;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `planning_${person.replace(/\s/g,'_')}_2026.ics`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ── Theme ──
+function toggleTheme(){
+  const isLight = document.body.classList.toggle('light');
+  document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙';
+  document.getElementById('themeColor').content = isLight ? '#f2f2f7' : '#0a0a0f';
+  localStorage.setItem('theme', isLight ? 'light' : 'dark');
+}
+// Restore saved theme
+if(localStorage.getItem('theme') === 'light'){
+  document.body.classList.add('light');
+  document.getElementById('themeBtn').textContent = '☀️';
+  document.getElementById('themeColor').content = '#f2f2f7';
+}
+
+buildGrid();
+</script>
+</body>
+</html>
